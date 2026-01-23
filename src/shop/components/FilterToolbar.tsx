@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { categories, products } from '@/mocks/products'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -19,15 +18,83 @@ import {
 } from '@/components/ui/accordion'
 import { Search, SlidersHorizontal, LayoutGrid, List, X } from 'lucide-react'
 import { useLocation, useSearchParams } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
+import { getCategoriesNameAction } from '../actions/get-categories.action'
+import { getProductsAction } from '../actions/get-products.action'
+import { useProducts } from '../hooks/useProducts'
 
 export function FilterToolbar() {
 	const [isFilterOpen, setIsFilterOpen] = useState(false)
 	const [searchParams, setSearchParams] = useSearchParams()
 	const { pathname } = useLocation()
 
-	const maxPrice = Math.max(...products.map((p) => p.price))
+	const { data: productsData } = useProducts()
+	const { data: categories } = useQuery({
+		queryKey: ['categories'],
+		queryFn: () => getCategoriesNameAction()
+	})
 
-	const selectedCategory = searchParams.get('category') ?? 'todos'
+	// Obtener todos los productos sin filtros para contar
+	const { data: allProductsData } = useQuery({
+		queryKey: ['allProductsCount'],
+		queryFn: () =>
+			getProductsAction({
+				limit: 1000,
+				offset: 0,
+				categories: undefined
+			}),
+		staleTime: 1000 * 60 * 5
+	})
+
+	// Handle loading and error states
+	if (!productsData?.data || !categories) {
+		return (
+			<div className="border-b bg-white sticky top-16 z-40">
+				<div className="container mx-auto px-4">
+					<div className="flex items-center justify-between gap-4 py-4">
+						<div className="relative flex-1 max-w-xl">
+							<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+							<Input
+								type="search"
+								placeholder="Buscar productos, SKU..."
+								value=""
+								onChange={() => {}}
+								className="w-full pl-10 pr-4 border-slate-200 focus:border-[#6D28D9] focus:ring-[#6D28D9]/20"
+								disabled
+							/>
+						</div>
+						<div className="flex items-center gap-2">
+							<div className="flex items-center border rounded-lg overflow-hidden shrink-0">
+								<Button
+									variant="ghost"
+									size="icon"
+									className="rounded-none h-9 w-9"
+									disabled
+								>
+									<LayoutGrid className="h-4 w-4" />
+								</Button>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="rounded-none h-9 w-9"
+									disabled
+								>
+									<List className="h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	const products = productsData.data
+	const allCategories = ['Todos', ...categories]
+	const maxPrice =
+		products.length > 0 ? Math.max(...products.map((p) => p.price)) : 10000
+
+	const selectedCategory = searchParams.get('category')
 	const priceMin = Number(searchParams.get('priceMin')) || 0
 	const priceMax = Number(searchParams.get('priceMax')) || maxPrice
 	const viewMode = (searchParams.get('view') as 'grid' | 'list') || 'grid'
@@ -36,8 +103,9 @@ export function FilterToolbar() {
 	const priceRange: [number, number] = [priceMin, priceMax]
 
 	const getCategoryCount = (category: string) => {
-		if (category === 'Todas') return products.length
-		return products.filter((p) => p.categoryName === category).length
+		if (category === 'Todos') return allProductsData?.count ?? 0
+		const allProducts = allProductsData?.data || []
+		return allProducts.filter((p) => p.categoryName === category).length
 	}
 
 	const formatPrice = (price: number) => {
@@ -51,27 +119,31 @@ export function FilterToolbar() {
 
 	// Handler functions
 	const handleCategoryChange = (category: string) => {
-		if (category === 'todos') {
-			searchParams.delete('category')
-		} else {
-			searchParams.set('category', category)
-		}
-		setSearchParams(searchParams)
+		setSearchParams((prev) => {
+			if (category === 'Todos' || category === null) {
+				prev.delete('category')
+			} else {
+				prev.set('category', category)
+			}
+			return prev
+		})
 	}
 
 	const handlePriceRangeChange = (range: [number, number]) => {
-		if (range[0] === 0) {
-			searchParams.delete('priceMin')
-		} else {
-			searchParams.set('priceMin', range[0].toString())
-		}
+		setSearchParams((prev) => {
+			if (range[0] === 0) {
+				prev.delete('priceMin')
+			} else {
+				prev.set('priceMin', range[0].toString())
+			}
 
-		if (range[1] === maxPrice) {
-			searchParams.delete('priceMax')
-		} else {
-			searchParams.set('priceMax', range[1].toString())
-		}
-		setSearchParams(searchParams)
+			if (range[1] === maxPrice) {
+				prev.delete('priceMax')
+			} else {
+				prev.set('priceMax', range[1].toString())
+			}
+			return prev
+		})
 	}
 
 	const handleViewModeChange = (mode: 'grid' | 'list') => {
@@ -82,24 +154,28 @@ export function FilterToolbar() {
 	}
 
 	const handleSearchChange = (query: string) => {
-		if (query) {
-			searchParams.set('search', query)
-		} else {
-			searchParams.delete('search')
-		}
-		setSearchParams(searchParams)
+		setSearchParams((prev) => {
+			if (query) {
+				prev.set('search', query)
+			} else {
+				prev.delete('search')
+			}
+			return prev
+		})
 	}
 
 	const clearAllFilters = () => {
-		searchParams.delete('category')
-		searchParams.delete('priceMin')
-		searchParams.delete('priceMax')
-		searchParams.delete('search')
-		setSearchParams(searchParams)
+		setSearchParams((prev) => {
+			prev.delete('category')
+			prev.delete('priceMin')
+			prev.delete('priceMax')
+			prev.delete('search')
+			return prev
+		})
 	}
 
 	const hasActiveFilters =
-		selectedCategory !== 'todos' ||
+		selectedCategory !== null ||
 		priceMin > 0 ||
 		priceMax < maxPrice ||
 		searchQuery
@@ -213,18 +289,26 @@ export function FilterToolbar() {
 									</AccordionTrigger>
 									<AccordionContent className="pb-4">
 										<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-											{categories.map((category) => (
+											{allCategories.map((category) => (
 												<label
 													key={category}
 													className={cn(
 														'flex items-center gap-2 rounded-lg px-3 py-2.5 cursor-pointer transition-all text-sm',
-														selectedCategory === category
+														(
+															category === 'Todos'
+																? selectedCategory === null
+																: selectedCategory === category
+														)
 															? 'bg-[#6D28D9]/10 border border-[#6D28D9]/30 text-[#6D28D9] font-medium'
 															: 'bg-white hover:bg-slate-50 border border-slate-200'
 													)}
 												>
 													<Checkbox
-														checked={selectedCategory === category}
+														checked={
+															category === 'Todos'
+																? selectedCategory === null
+																: selectedCategory === category
+														}
 														onCheckedChange={() =>
 															handleCategoryChange(category)
 														}
@@ -235,7 +319,11 @@ export function FilterToolbar() {
 														variant="secondary"
 														className={cn(
 															'text-xs shrink-0',
-															selectedCategory === category
+															(
+																category === 'Todos'
+																	? selectedCategory === null
+																	: selectedCategory === category
+															)
 																? 'bg-[#6D28D9] text-white'
 																: 'bg-slate-100 text-slate-600'
 														)}

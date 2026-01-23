@@ -35,9 +35,9 @@ export const CustomHeader = () => {
 							Todos
 						</Link>
 						<Link
-							to="/category/soluciones-ambientales"
+							to="/category/Soluciones Ambientales"
 							className={`px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-								category === 'soluciones-ambientales'
+								category === 'Soluciones Ambientales'
 									? 'bg-[#0D9668]/25 text-white'
 									: 'text-white/70 hover:text-white hover:bg-white/5'
 							}`}
@@ -45,9 +45,9 @@ export const CustomHeader = () => {
 							Soluciones Ambientales
 						</Link>
 						<Link
-							to="/category/interiores"
+							to="/category/Interiores"
 							className={`px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-								category === 'interiores'
+								category === 'Interiores'
 									? 'bg-[#0D9668]/25 text-white'
 									: 'text-white/70 hover:text-white hover:bg-white/5'
 							}`}
@@ -55,9 +55,9 @@ export const CustomHeader = () => {
 							Interiores
 						</Link>
 						<Link
-							to="/category/obra-gris"
+							to="/category/Obra Gris"
 							className={`px-4 py-2 text-sm font-medium rounded-full transition-all whitespace-nowrap ${
-								category === 'obra-gris'
+								category === 'Obra Gris'
 									? 'bg-[#0D9668]/25 text-white'
 									: 'text-white/70 hover:text-white hover:bg-white/5'
 							}`}

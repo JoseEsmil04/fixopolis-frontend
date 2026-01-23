@@ -22,7 +22,7 @@ export default function HomePage() {
 			/>
 
 			<ProductsGrid products={data.data || []} />
-			<CustomPagination totalPages={data.data.length ?? 0} />
+			<CustomPagination totalPages={data.totalPages} />
 		</main>
 	)
 }
