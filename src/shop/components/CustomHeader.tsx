@@ -68,20 +68,19 @@ export const CustomHeader = () => {
 
 					{/* Actions */}
 					<div className="flex items-center gap-2">
-						<Button
-							variant="ghost"
-							className="hidden sm:flex text-white/70 hover:text-white hover:bg-white/10 rounded-full"
-						>
-							Iniciar sesión
-						</Button>
-
-						<Button
-							className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full"
-							onClick={() => (window.location.href = '/admin')}
-						>
-							Panel Admin
-						</Button>
-
+						<Link to="auth/login">
+							<Button
+								variant="ghost"
+								className="hidden sm:flex text-white/70 hover:text-white hover:bg-white/10 rounded-full"
+							>
+								Iniciar sesión
+							</Button>
+						</Link>
+						<Link to="admin">
+							<Button className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
+								Panel Admin
+							</Button>
+						</Link>
 						<Button
 							variant="ghost"
 							size="icon"

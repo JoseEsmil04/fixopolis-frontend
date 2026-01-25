@@ -1,8 +1,8 @@
-import { Wrench, Hammer, HardHat, Ruler, Drill } from 'lucide-react'
-import { LoginForm } from '../components/LoginForm'
+import { Drill, Ruler, HardHat } from 'lucide-react'
+import { RegisterForm } from '../components/RegisterForm'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
 	return (
 		<>
 			{/* Left Panel - Branding */}
@@ -14,7 +14,7 @@ export const LoginPage = () => {
 					<div className="absolute -bottom-20 -left-20 w-80 h-80 border border-white/15 rounded-full" />
 				</div>
 
-				{/* Floating Tool Icons */}
+				{/* Floating Elements */}
 				<div className="absolute top-1/4 right-16 animate-pulse">
 					<div className="w-16 h-16 rounded-2xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
 						<Drill className="w-8 h-8 text-secondary" />
@@ -37,34 +37,29 @@ export const LoginPage = () => {
 					<CustomLogo width="16" height="16" fontSize="4" />
 
 					{/* Tagline */}
-					<h2 className="text-4xl xl:text-5xl font-bold text-secondary-foreground leading-tight mb-6 text-balance">
-						Todo para construir{' '}
-						<span className="text-primary">tu proyecto</span>
+					<h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight mb-6 text-balance mt-2">
+						Únete a <span className="text-primary">Fixopolis</span>
 					</h2>
-					<p className="text-secondary-foreground/70 text-lg max-w-md leading-relaxed mb-12">
-						La plataforma de gestión más completa para tu ferretería. Control de
-						inventario, ventas y más.
+					<p className="text-white/70 text-lg max-w-md leading-relaxed mb-12">
+						Crea tu cuenta y accede a los mejores materiales de construcción
+						para tus proyectos.
 					</p>
 
-					{/* Stats */}
-					<div className="flex gap-12">
-						<div>
-							<div className="text-4xl font-bold text-primary">2,500+</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Productos
-							</div>
+					{/* Features */}
+					<div className="space-y-4">
+						<div className="flex items-center gap-3">
+							<div className="w-2 h-2 bg-primary rounded-full"></div>
+							<span className="text-white/80">
+								Catálogo completo de productos
+							</span>
 						</div>
-						<div>
-							<div className="text-4xl font-bold text-primary">150+</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Ferreterías
-							</div>
+						<div className="flex items-center gap-3">
+							<div className="w-2 h-2 bg-primary rounded-full"></div>
+							<span className="text-white/80">Asesoría experta gratis</span>
 						</div>
-						<div>
-							<div className="text-4xl font-bold text-primary">98%</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Satisfacción
-							</div>
+						<div className="flex items-center gap-3">
+							<div className="w-2 h-2 bg-primary rounded-full"></div>
+							<span className="text-white/80">Entrega a domicilio</span>
 						</div>
 					</div>
 				</div>
@@ -73,7 +68,7 @@ export const LoginPage = () => {
 				<div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-900 to-transparent" />
 			</div>
 
-			{/* Right Panel - Login Form */}
+			{/* Right Panel - Register Form */}
 			<div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-background relative overflow-hidden">
 				{/* Decorative elements */}
 				<div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -82,23 +77,10 @@ export const LoginPage = () => {
 				<div className="w-full max-w-md relative z-10">
 					{/* Mobile Logo */}
 					<div className="flex lg:hidden items-center justify-center gap-3 mb-10">
-						<div className="relative">
-							<div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shadow-lg">
-								<Wrench className="w-7 h-7 text-secondary-foreground" />
-							</div>
-							<div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-md bg-primary flex items-center justify-center shadow">
-								<Hammer className="w-3 h-3 text-primary-foreground" />
-							</div>
-						</div>
-						<div>
-							<h1 className="text-2xl font-bold text-secondary">Ferretería</h1>
-							<span className="text-primary font-semibold tracking-widest text-xs">
-								PRO
-							</span>
-						</div>
+						<CustomLogo />
 					</div>
 
-					<LoginForm />
+					<RegisterForm />
 
 					{/* Footer */}
 					<p className="text-center text-xs text-muted-foreground mt-4">

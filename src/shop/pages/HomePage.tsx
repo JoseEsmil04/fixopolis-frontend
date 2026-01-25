@@ -1,17 +1,13 @@
 import { CustomPagination } from '@/components/custom/CustomPagination'
-import { CustomJumbotron } from '../../components/CustomJumbotron'
-import { ProductsGrid } from '../../components/ProductsGrid'
+import { CustomJumbotron } from '../components/CustomJumbotron'
+import { ProductsGrid } from '../components/ProductsGrid'
+import { CustomLoading } from '../../components/custom/CustomLoading'
 import { useProducts } from '@/shop/hooks/useProducts'
 
 export default function HomePage() {
 	const { data, isLoading } = useProducts()
 
-	if (isLoading || !data)
-		return (
-			<div>
-				<h1>Cargando...</h1>
-			</div>
-		)
+	if (isLoading || !data) return <CustomLoading item="productos" />
 
 	return (
 		<main>

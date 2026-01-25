@@ -1,17 +1,18 @@
 import { createBrowserRouter } from 'react-router'
 import { HomeLayout } from './shop/layouts/HomeLayout'
-import HomePage from './shop/pages/home/HomePage'
+import HomePage from './shop/pages/HomePage'
 import { AuthLayout } from './auth/layouts/AuthLayout'
 import { Navigate } from 'react-router'
 import { LoginPage } from './auth/pages/LoginPage'
-import { ProductPage } from './shop/pages/product/ProductPage'
-import { CategoryPage } from './shop/pages/category/CategoryPage'
+import { ProductPage } from './shop/pages/ProductPage'
+import { CategoryPage } from './shop/pages/CategoryPage'
 import { AdminLayout } from './admin/layouts/AdminLayout'
-import { DashboardPage } from './admin/pages/dashboard/DashboardPage'
-import { CustomerPage } from './admin/pages/customer/CustomerPage'
-import { OrderPage } from './admin/pages/order/OrderPage'
-import { AdminProductsPage } from './admin/pages/admin-products/AdminProductsPage'
-import { SettingsPage } from './admin/pages/settings/SettingsPage'
+import { DashboardPage } from './admin/pages/DashboardPage'
+import { CustomerPage } from './admin/pages/CustomerPage'
+import { OrderPage } from './admin/pages/OrderPage'
+import { AdminProductsPage } from './admin/pages/AdminProductsPage'
+import { SettingsPage } from './admin/pages/SettingsPage'
+import { RegisterPage } from './auth/pages/RegisterPage'
 
 export const appRouter = createBrowserRouter([
 	{
@@ -43,6 +44,10 @@ export const appRouter = createBrowserRouter([
 			{
 				path: 'login',
 				element: <LoginPage />
+			},
+			{
+				path: 'register',
+				element: <RegisterPage />
 			}
 		]
 	},

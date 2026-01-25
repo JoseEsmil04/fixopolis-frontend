@@ -10,15 +10,17 @@ export const useProducts = () => {
 	const page = searchParams.get('page') || 1
 	const offset = (Number(page) - 1) * Number(limit)
 	const selectedCategory = searchParams.get('category')
+	const query = searchParams.get('query') ?? ''
 
 	const category = selectedCategory || categorySlug
 
 	return useQuery({
-		queryKey: ['products', { limit, offset, categories: category }],
+		queryKey: ['products', { limit, offset, query, categories: category }],
 		queryFn: () =>
 			getProductsAction({
 				limit: isNaN(+limit) ? 6 : limit,
 				offset: isNaN(offset) ? 0 : offset,
+				query,
 				categories: category
 			}),
 		staleTime: 1000 * 60 * 5

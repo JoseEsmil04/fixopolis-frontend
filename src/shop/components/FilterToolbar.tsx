@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Slider } from '@/components/ui/slider'
-import { Badge } from '@/components/ui/badge'
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -20,13 +19,14 @@ import { Search, SlidersHorizontal, LayoutGrid, List, X } from 'lucide-react'
 import { useLocation, useSearchParams } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import { getCategoriesNameAction } from '../actions/get-categories.action'
-import { getProductsAction } from '../actions/get-products.action'
 import { useProducts } from '../hooks/useProducts'
+import { CustomLoading } from '@/components/custom/CustomLoading'
 
 export function FilterToolbar() {
 	const [isFilterOpen, setIsFilterOpen] = useState(false)
 	const [searchParams, setSearchParams] = useSearchParams()
 	const { pathname } = useLocation()
+	const searchInputRef = useRef<HTMLInputElement>(null)
 
 	const { data: productsData } = useProducts()
 	const { data: categories } = useQuery({
@@ -34,59 +34,9 @@ export function FilterToolbar() {
 		queryFn: () => getCategoriesNameAction()
 	})
 
-	// Obtener todos los productos sin filtros para contar
-	const { data: allProductsData } = useQuery({
-		queryKey: ['allProductsCount'],
-		queryFn: () =>
-			getProductsAction({
-				limit: 1000,
-				offset: 0,
-				categories: undefined
-			}),
-		staleTime: 1000 * 60 * 5
-	})
-
 	// Handle loading and error states
 	if (!productsData?.data || !categories) {
-		return (
-			<div className="border-b bg-white sticky top-16 z-40">
-				<div className="container mx-auto px-4">
-					<div className="flex items-center justify-between gap-4 py-4">
-						<div className="relative flex-1 max-w-xl">
-							<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-							<Input
-								type="search"
-								placeholder="Buscar productos, SKU..."
-								value=""
-								onChange={() => {}}
-								className="w-full pl-10 pr-4 border-slate-200 focus:border-[#6D28D9] focus:ring-[#6D28D9]/20"
-								disabled
-							/>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="flex items-center border rounded-lg overflow-hidden shrink-0">
-								<Button
-									variant="ghost"
-									size="icon"
-									className="rounded-none h-9 w-9"
-									disabled
-								>
-									<LayoutGrid className="h-4 w-4" />
-								</Button>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="rounded-none h-9 w-9"
-									disabled
-								>
-									<List className="h-4 w-4" />
-								</Button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		)
+		return <CustomLoading />
 	}
 
 	const products = productsData.data
@@ -98,15 +48,9 @@ export function FilterToolbar() {
 	const priceMin = Number(searchParams.get('priceMin')) || 0
 	const priceMax = Number(searchParams.get('priceMax')) || maxPrice
 	const viewMode = (searchParams.get('view') as 'grid' | 'list') || 'grid'
-	const searchQuery = searchParams.get('search') || ''
+	const query = searchParams.get('query') || ''
 
 	const priceRange: [number, number] = [priceMin, priceMax]
-
-	const getCategoryCount = (category: string) => {
-		if (category === 'Todos') return allProductsData?.count ?? 0
-		const allProducts = allProductsData?.data || []
-		return allProducts.filter((p) => p.categoryName === category).length
-	}
 
 	const formatPrice = (price: number) => {
 		return new Intl.NumberFormat('es-DO', {
@@ -153,18 +97,21 @@ export function FilterToolbar() {
 		})
 	}
 
-	const handleSearchChange = (query: string) => {
+	const handleSearchChange = (searchValue: string) => {
 		setSearchParams((prev) => {
-			if (query) {
-				prev.set('search', query)
+			if (searchValue.trim()) {
+				prev.set('query', searchValue.trim())
 			} else {
-				prev.delete('search')
+				prev.delete('query')
 			}
 			return prev
 		})
 	}
 
 	const clearAllFilters = () => {
+		if (searchInputRef.current) {
+			searchInputRef.current.value = ''
+		}
 		setSearchParams((prev) => {
 			prev.delete('category')
 			prev.delete('priceMin')
@@ -175,10 +122,7 @@ export function FilterToolbar() {
 	}
 
 	const hasActiveFilters =
-		selectedCategory !== null ||
-		priceMin > 0 ||
-		priceMax < maxPrice ||
-		searchQuery
+		selectedCategory !== null || priceMin > 0 || priceMax < maxPrice || query
 
 	return (
 		<div className="border-b bg-white sticky top-16 z-40">
@@ -190,9 +134,14 @@ export function FilterToolbar() {
 							<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								type="search"
+								ref={searchInputRef}
 								placeholder="Buscar productos, SKU..."
-								value={searchQuery}
-								onChange={(e) => handleSearchChange(e.target.value)}
+								defaultValue={query}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter') {
+										handleSearchChange(searchInputRef.current?.value || '')
+									}
+								}}
 								className="w-full pl-10 pr-4 border-slate-200 focus:border-[#6D28D9] focus:ring-[#6D28D9]/20"
 							/>
 						</div>
@@ -315,21 +264,6 @@ export function FilterToolbar() {
 														className="data-[state=checked]:bg-[#6D28D9] data-[state=checked]:border-[#6D28D9]"
 													/>
 													<span className="truncate flex-1">{category}</span>
-													<Badge
-														variant="secondary"
-														className={cn(
-															'text-xs shrink-0',
-															(
-																category === 'Todos'
-																	? selectedCategory === null
-																	: selectedCategory === category
-															)
-																? 'bg-[#6D28D9] text-white'
-																: 'bg-slate-100 text-slate-600'
-														)}
-													>
-														{getCategoryCount(category)}
-													</Badge>
 												</label>
 											))}
 										</div>
