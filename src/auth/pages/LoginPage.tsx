@@ -1,118 +1,167 @@
-import { Wrench, Hammer, HardHat, Ruler, Drill } from 'lucide-react'
-import { LoginForm } from '../components/LoginForm'
+import React from 'react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
+import { Link } from 'react-router'
+import {
+	EyeIcon,
+	EyeOffIcon,
+	GithubIcon,
+	GoogleIcon
+} from '../components/AuthIcons'
 
 export const LoginPage = () => {
+	const [isLoading, setIsLoading] = useState(false)
+	const [showPassword, setShowPassword] = useState(false)
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		setIsLoading(true)
+		await new Promise((resolve) => setTimeout(resolve, 1500))
+		setIsLoading(false)
+	}
+
 	return (
-		<>
-			{/* Left Panel - Branding */}
-			<div className="hidden lg:flex lg:w-1/2 bg-[#161e2c] relative overflow-hidden">
-				{/* Background Pattern */}
-				<div className="absolute inset-0 opacity-10">
-					<div className="absolute top-20 left-20 w-64 h-64 border border-white/20 rounded-full" />
-					<div className="absolute top-40 left-40 w-96 h-96 border border-white/10 rounded-full" />
-					<div className="absolute -bottom-20 -left-20 w-80 h-80 border border-white/15 rounded-full" />
-				</div>
+		<main className="min-h-svh flex">
+			{/* Panel izquierdo - Solo visible en desktop */}
+			<div className="hidden lg:flex lg:w-1/2 bg-foreground text-background p-12 flex-col justify-between">
+				<CustomLogo width="12" height="12" />
 
-				{/* Floating Tool Icons */}
-				<div className="absolute top-1/4 right-16 animate-pulse">
-					<div className="w-16 h-16 rounded-2xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<Drill className="w-8 h-8 text-secondary" />
-					</div>
-				</div>
-				<div className="absolute top-1/2 right-32 animate-pulse delay-300">
-					<div className="w-12 h-12 rounded-xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<Ruler className="w-6 h-6 text-secondary" />
-					</div>
-				</div>
-				<div className="absolute bottom-1/3 right-20 animate-pulse delay-500">
-					<div className="w-14 h-14 rounded-2xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<HardHat className="w-7 h-7 text-secondary" />
-					</div>
-				</div>
-
-				{/* Content */}
-				<div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-					{/* Logo */}
-					<CustomLogo width="16" height="16" fontSize="4" />
-
-					{/* Tagline */}
-					<h2 className="text-4xl xl:text-5xl font-bold text-secondary-foreground leading-tight mb-6 text-balance">
-						Todo para construir{' '}
-						<span className="text-primary">tu proyecto</span>
-					</h2>
-					<p className="text-secondary-foreground/70 text-lg max-w-md leading-relaxed mb-12">
-						La plataforma de gestión más completa para tu ferretería. Control de
-						inventario, ventas y más.
+				<blockquote className="space-y-4">
+					<p className="text-xl leading-relaxed text-balance">
+						"Esta plataforma ha transformado completamente la manera en que
+						gestionamos nuestro equipo. Simple, intuitiva y poderosa."
 					</p>
+					<footer className="text-sm text-background/70">
+						Sofia Martinez, CEO de TechFlow
+					</footer>
+				</blockquote>
 
-					{/* Stats */}
-					<div className="flex gap-12">
-						<div>
-							<div className="text-4xl font-bold text-primary">2,500+</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Productos
-							</div>
-						</div>
-						<div>
-							<div className="text-4xl font-bold text-primary">150+</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Ferreterías
-							</div>
-						</div>
-						<div>
-							<div className="text-4xl font-bold text-primary">98%</div>
-							<div className="text-secondary-foreground/60 text-sm">
-								Satisfacción
-							</div>
-						</div>
-					</div>
-				</div>
-
-				{/* Bottom gradient */}
-				<div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-900 to-transparent" />
+				<p className="text-sm text-background/50">
+					2026 Acme Inc. Todos los derechos reservados.
+				</p>
 			</div>
 
-			{/* Right Panel - Login Form */}
-			<div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-background relative overflow-hidden">
-				{/* Decorative elements */}
-				<div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-				<div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+			{/* Panel derecho - Formulario */}
+			<div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
+				<div className="w-full max-w-sm">
+					{/* Logo móvil */}
+					<div className="flex items-center gap-3 mb-8 lg:hidden">
+						<div className="w-8 h-8 bg-foreground rounded-md" />
+						<span className="font-semibold text-lg text-foreground">
+							Acme Inc
+						</span>
+					</div>
 
-				<div className="w-full max-w-md relative z-10">
-					{/* Mobile Logo */}
-					<div className="flex lg:hidden items-center justify-center gap-3 mb-10">
-						<div className="relative">
-							<div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shadow-lg">
-								<Wrench className="w-7 h-7 text-secondary-foreground" />
+					<div className="mb-8">
+						<h1 className="text-2xl font-semibold tracking-tight text-foreground">
+							Bienvenido de nuevo
+						</h1>
+						<p className="text-muted-foreground mt-2">
+							Ingresa tus credenciales para acceder a tu cuenta
+						</p>
+					</div>
+
+					<form onSubmit={handleSubmit} className="space-y-5">
+						<div className="space-y-2">
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="tu@email.com"
+								required
+								disabled={isLoading}
+								className="h-11"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<Label htmlFor="password">Contraseña</Label>
+								<a
+									href="#"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Olvidaste tu contraseña?
+								</a>
 							</div>
-							<div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-md bg-primary flex items-center justify-center shadow">
-								<Hammer className="w-3 h-3 text-primary-foreground" />
+							<div className="relative">
+								<Input
+									id="password"
+									type={showPassword ? 'text' : 'password'}
+									placeholder="••••••••"
+									required
+									disabled={isLoading}
+									className="h-11 pr-10"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+									aria-label={
+										showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+									}
+								>
+									{showPassword ? (
+										<EyeOffIcon className="w-4 h-4" />
+									) : (
+										<EyeIcon className="w-4 h-4" />
+									)}
+								</button>
 							</div>
 						</div>
-						<div>
-							<h1 className="text-2xl font-bold text-secondary">Ferretería</h1>
-							<span className="text-primary font-semibold tracking-widest text-xs">
-								PRO
+
+						<div className="flex items-center gap-2">
+							<Checkbox id="remember" />
+							<Label
+								htmlFor="remember"
+								className="text-sm text-muted-foreground font-normal cursor-pointer"
+							>
+								Recordarme por 30 días
+							</Label>
+						</div>
+
+						<Button type="submit" disabled={isLoading} className="w-full h-11">
+							{isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+						</Button>
+					</form>
+
+					<div className="relative my-6">
+						<div className="absolute inset-0 flex items-center">
+							<div className="w-full border-t border-border" />
+						</div>
+						<div className="relative flex justify-center text-xs">
+							<span className="bg-background px-3 text-muted-foreground">
+								o continúa con
 							</span>
 						</div>
 					</div>
 
-					<LoginForm />
+					<div className="flex gap-3">
+						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+							<GoogleIcon className="w-4 h-4" />
+							<span className="ml-2">Google</span>
+						</Button>
+						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+							<GithubIcon className="w-4 h-4" />
+							<span className="ml-2">GitHub</span>
+						</Button>
+					</div>
 
-					{/* Footer */}
-					<p className="text-center text-xs text-muted-foreground mt-4">
-						Al continuar, aceptas nuestros{' '}
-						<button className="text-accent hover:underline">
-							Términos de Servicio
-						</button>{' '}
-						y{' '}
-						<button className="text-accent hover:underline">
-							Política de Privacidad
-						</button>
+					<p className="text-center text-sm text-muted-foreground mt-8">
+						No tienes cuenta?{' '}
+						<Link
+							to="/auth/register"
+							className="text-foreground font-medium hover:underline"
+						>
+							Regístrate gratis
+						</Link>
 					</p>
 				</div>
 			</div>
-		</>
+		</main>
 	)
 }

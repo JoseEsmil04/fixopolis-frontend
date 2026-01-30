@@ -1,100 +1,199 @@
-import { Drill, Ruler, HardHat } from 'lucide-react'
-import { RegisterForm } from '../components/RegisterForm'
+import React from 'react'
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
+import { Link } from 'react-router'
+import { EyeOffIcon, EyeIcon, GithubIcon } from 'lucide-react'
+import { GoogleIcon } from '../components/AuthIcons'
 
 export const RegisterPage = () => {
+	const [isLoading, setIsLoading] = useState(false)
+	const [showPassword, setShowPassword] = useState(false)
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		setIsLoading(true)
+		await new Promise((resolve) => setTimeout(resolve, 1500))
+		setIsLoading(false)
+	}
+
 	return (
-		<>
-			{/* Left Panel - Branding */}
-			<div className="hidden lg:flex lg:w-1/2 bg-[#161e2c] relative overflow-hidden">
-				{/* Background Pattern */}
-				<div className="absolute inset-0 opacity-10">
-					<div className="absolute top-20 left-20 w-64 h-64 border border-white/20 rounded-full" />
-					<div className="absolute top-40 left-40 w-96 h-96 border border-white/10 rounded-full" />
-					<div className="absolute -bottom-20 -left-20 w-80 h-80 border border-white/15 rounded-full" />
-				</div>
+		<main className="min-h-svh flex">
+			{/* Panel izquierdo - Solo visible en desktop */}
+			<div className="hidden lg:flex lg:w-1/2 bg-foreground text-background p-12 flex-col justify-between">
+				<CustomLogo width="12" height="12" />
 
-				{/* Floating Elements */}
-				<div className="absolute top-1/4 right-16 animate-pulse">
-					<div className="w-16 h-16 rounded-2xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<Drill className="w-8 h-8 text-secondary" />
-					</div>
-				</div>
-				<div className="absolute top-1/2 right-32 animate-pulse delay-300">
-					<div className="w-12 h-12 rounded-xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<Ruler className="w-6 h-6 text-secondary" />
-					</div>
-				</div>
-				<div className="absolute bottom-1/3 right-20 animate-pulse delay-500">
-					<div className="w-14 h-14 rounded-2xl bg-secondary/20 backdrop-blur-sm flex items-center justify-center">
-						<HardHat className="w-7 h-7 text-secondary" />
-					</div>
-				</div>
-
-				{/* Content */}
-				<div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-					{/* Logo */}
-					<CustomLogo width="16" height="16" fontSize="4" />
-
-					{/* Tagline */}
-					<h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight mb-6 text-balance mt-2">
-						Únete a <span className="text-primary">Fixopolis</span>
-					</h2>
-					<p className="text-white/70 text-lg max-w-md leading-relaxed mb-12">
-						Crea tu cuenta y accede a los mejores materiales de construcción
-						para tus proyectos.
+				<blockquote className="space-y-4">
+					<p className="text-xl leading-relaxed text-balance">
+						"Esta plataforma ha transformado completamente la manera en que
+						gestionamos nuestro equipo. Simple, intuitiva y poderosa."
 					</p>
+					<footer className="text-sm text-background/70">
+						Sofia Martinez, CEO de TechFlow
+					</footer>
+				</blockquote>
 
-					{/* Features */}
-					<div className="space-y-4">
-						<div className="flex items-center gap-3">
-							<div className="w-2 h-2 bg-primary rounded-full"></div>
-							<span className="text-white/80">
-								Catálogo completo de productos
+				<p className="text-sm text-background/50">
+					2026 Acme Inc. Todos los derechos reservados.
+				</p>
+			</div>
+
+			{/* Panel derecho - Formulario */}
+			<div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
+				<div className="w-full max-w-sm">
+					{/* Logo móvil */}
+					<div className="flex items-center gap-3 mb-8 lg:hidden">
+						<div className="w-8 h-8 bg-foreground rounded-md" />
+						<span className="font-semibold text-lg text-foreground">
+							Acme Inc
+						</span>
+					</div>
+
+					<div className="mb-8">
+						<h1 className="text-2xl font-semibold tracking-tight text-foreground">
+							Crear cuenta
+						</h1>
+						<p className="text-muted-foreground mt-2">
+							Regístrate para empezar a usar la plataforma
+						</p>
+					</div>
+
+					<form onSubmit={handleSubmit} className="space-y-5">
+						<div className="space-y-2">
+							<Label htmlFor="name">Nombre completo</Label>
+							<Input
+								id="name"
+								type="text"
+								placeholder="Juan Pérez"
+								required
+								disabled={isLoading}
+								className="h-11"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="tu@email.com"
+								required
+								disabled={isLoading}
+								className="h-11"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="password">Contraseña</Label>
+							<div className="relative">
+								<Input
+									id="password"
+									type={showPassword ? 'text' : 'password'}
+									placeholder="••••••••"
+									required
+									disabled={isLoading}
+									className="h-11 pr-10"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+									aria-label={
+										showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+									}
+								>
+									{showPassword ? (
+										<EyeOffIcon className="w-4 h-4" />
+									) : (
+										<EyeIcon className="w-4 h-4" />
+									)}
+								</button>
+							</div>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="confirmPassword">Confirmar contraseña</Label>
+							<div className="relative">
+								<Input
+									id="confirmPassword"
+									type={showConfirmPassword ? 'text' : 'password'}
+									placeholder="••••••••"
+									required
+									disabled={isLoading}
+									className="h-11 pr-10"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+									aria-label={
+										showConfirmPassword
+											? 'Ocultar contraseña'
+											: 'Mostrar contraseña'
+									}
+								>
+									{showConfirmPassword ? (
+										<EyeOffIcon className="w-4 h-4" />
+									) : (
+										<EyeIcon className="w-4 h-4" />
+									)}
+								</button>
+							</div>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<Checkbox id="terms" required />
+							<Label
+								htmlFor="terms"
+								className="text-sm text-muted-foreground font-normal cursor-pointer"
+							>
+								Acepto los términos y condiciones y la política de privacidad
+							</Label>
+						</div>
+
+						<Button type="submit" disabled={isLoading} className="w-full h-11">
+							{isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
+						</Button>
+					</form>
+
+					<div className="relative my-6">
+						<div className="absolute inset-0 flex items-center">
+							<div className="w-full border-t border-border" />
+						</div>
+						<div className="relative flex justify-center text-xs">
+							<span className="bg-background px-3 text-muted-foreground">
+								o continúa con
 							</span>
 						</div>
-						<div className="flex items-center gap-3">
-							<div className="w-2 h-2 bg-primary rounded-full"></div>
-							<span className="text-white/80">Asesoría experta gratis</span>
-						</div>
-						<div className="flex items-center gap-3">
-							<div className="w-2 h-2 bg-primary rounded-full"></div>
-							<span className="text-white/80">Entrega a domicilio</span>
-						</div>
-					</div>
-				</div>
-
-				{/* Bottom gradient */}
-				<div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-900 to-transparent" />
-			</div>
-
-			{/* Right Panel - Register Form */}
-			<div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-background relative overflow-hidden">
-				{/* Decorative elements */}
-				<div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-				<div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-				<div className="w-full max-w-md relative z-10">
-					{/* Mobile Logo */}
-					<div className="flex lg:hidden items-center justify-center gap-3 mb-10">
-						<CustomLogo />
 					</div>
 
-					<RegisterForm />
+					<div className="flex gap-3">
+						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+							<GoogleIcon className="w-4 h-4" />
+							<span className="ml-2">Google</span>
+						</Button>
+						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+							<GithubIcon className="w-4 h-4" />
+							<span className="ml-2">GitHub</span>
+						</Button>
+					</div>
 
-					{/* Footer */}
-					<p className="text-center text-xs text-muted-foreground mt-4">
-						Al continuar, aceptas nuestros{' '}
-						<button className="text-accent hover:underline">
-							Términos de Servicio
-						</button>{' '}
-						y{' '}
-						<button className="text-accent hover:underline">
-							Política de Privacidad
-						</button>
+					<p className="text-center text-sm text-muted-foreground mt-8">
+						Ya tienes cuenta?{' '}
+						<Link
+							to="/auth/login"
+							className="text-foreground font-medium hover:underline"
+						>
+							Inicia sesión
+						</Link>
 					</p>
 				</div>
 			</div>
-		</>
+		</main>
 	)
 }
