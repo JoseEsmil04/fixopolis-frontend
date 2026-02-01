@@ -5,22 +5,39 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import {
 	EyeIcon,
 	EyeOffIcon,
 	GithubIcon,
 	GoogleIcon
 } from '../components/AuthIcons'
+import { toast } from 'sonner'
+import { useAuthStore } from '../store/auth.store'
 
 export const LoginPage = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [showPassword, setShowPassword] = useState(false)
+	const navigate = useNavigate()
+	const { login } = useAuthStore()
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
+	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
 		setIsLoading(true)
-		await new Promise((resolve) => setTimeout(resolve, 1500))
+
+		const formData = new FormData(event.target as HTMLFormElement)
+		const email = formData.get('email') as string
+		const password = formData.get('password') as string
+
+		const isLogged = await login(email, password)
+
+		if (isLogged) {
+			console.log('redireccionando al Home')
+			navigate('/')
+			return
+		}
+
+		toast.error(`Correo y/o contraseña no validos`)
 		setIsLoading(false)
 	}
 
@@ -65,12 +82,13 @@ export const LoginPage = () => {
 						</p>
 					</div>
 
-					<form onSubmit={handleSubmit} className="space-y-5">
+					<form onSubmit={(event) => handleLogin(event)} className="space-y-5">
 						<div className="space-y-2">
 							<Label htmlFor="email">Email</Label>
 							<Input
 								id="email"
 								type="email"
+								name="email"
 								placeholder="tu@email.com"
 								required
 								disabled={isLoading}
@@ -91,6 +109,7 @@ export const LoginPage = () => {
 							<div className="relative">
 								<Input
 									id="password"
+									name="password"
 									type={showPassword ? 'text' : 'password'}
 									placeholder="••••••••"
 									required

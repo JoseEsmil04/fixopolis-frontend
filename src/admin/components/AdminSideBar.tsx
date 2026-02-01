@@ -1,5 +1,3 @@
-'use client'
-
 import { cn } from '@/lib/utils'
 import {
 	LayoutDashboard,
@@ -13,6 +11,7 @@ import {
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { Bolt } from 'lucide-react'
+import { useAuthStore } from '@/auth/store/auth.store'
 
 const navItems = [
 	{ icon: LayoutDashboard, label: 'Dashboard', to: '/admin' },
@@ -25,12 +24,13 @@ const navItems = [
 export function AdminSidebar() {
 	const { pathname } = useLocation()
 	const [collapsed, setCollapsed] = useState(false)
+	const { user } = useAuthStore()
 
 	return (
 		<aside
 			className={cn(
 				'fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300',
-				collapsed ? 'w-18' : 'w-64'
+				collapsed ? 'w-20' : 'w-64'
 			)}
 		>
 			<div className="flex h-full flex-col">
@@ -94,15 +94,15 @@ export function AdminSidebar() {
 						)}
 					>
 						<div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-							<span className="text-sm font-semibold">AD</span>
+							<span className="text-sm font-semibold">{user!.name.at(0)}</span>
 						</div>
 						{!collapsed && (
 							<div className="flex-1 overflow-hidden">
 								<p className="truncate text-sm font-medium text-foreground">
-									Admin
+									{user!.name}
 								</p>
 								<p className="truncate text-xs text-muted-foreground">
-									admin@fixopolis.com
+									{user!.email}
 								</p>
 							</div>
 						)}

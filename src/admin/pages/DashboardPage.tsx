@@ -3,15 +3,25 @@ import { AdminHeader } from '@/admin/components/AdminHeader'
 import { RecentOrders } from '@/admin/components/RecentOrders'
 import { ServicesChart } from '@/admin/components/ServicesChart'
 import { StatsCards } from '@/admin/components/StatsCards'
+import { useAuthStore } from '@/auth/store/auth.store'
+import { useNavigate } from 'react-router'
 
 export const DashboardPage = () => {
+	const { user } = useAuthStore()
+	const navigate = useNavigate()
+
+	if (!user) {
+		navigate('/')
+		return
+	}
+
 	return (
 		<div className="pl-64 transition-all duration-300">
 			<AdminHeader />
 			<main className="p-6">
 				<div className="mb-6">
 					<h2 className="text-2xl font-bold text-foreground">
-						Bienvenido de vuelta
+						Bienvenido de vuelta, {user.name}
 					</h2>
 					<p className="text-muted-foreground">
 						Aquí tienes un resumen de la actividad de Fixopolis

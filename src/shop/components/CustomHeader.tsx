@@ -10,10 +10,23 @@ import {
 import { ShoppingCart, Menu } from 'lucide-react'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useParams } from 'react-router'
+import { useAuthStore } from '@/auth/store/auth.store'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 
 export const CustomHeader = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const { categorySlug: category } = useParams()
+	const { user, logout } = useAuthStore()
 
 	return (
 		<header className="sticky top-0 z-50 w-full bg-[#1E293B] shadow-lg">
@@ -68,19 +81,57 @@ export const CustomHeader = () => {
 
 					{/* Actions */}
 					<div className="flex items-center gap-2">
-						<Link to="auth/login">
-							<Button
-								variant="ghost"
-								className="hidden sm:flex text-white/70 hover:text-white hover:bg-white/10 rounded-full"
-							>
-								Iniciar sesión
-							</Button>
-						</Link>
-						<Link to="admin">
-							<Button className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
-								Panel Admin
-							</Button>
-						</Link>
+						{!user ? (
+							<Link to="auth/login">
+								<Button
+									variant="ghost"
+									className="hidden sm:flex bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
+								>
+									Iniciar sesión
+								</Button>
+							</Link>
+						) : (
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+										variant="default"
+										className="hidden sm:flex bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
+									>
+										Cerrar sesión
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											Estas seguro de que quieres cerrar sesión?
+										</AlertDialogTitle>
+										<AlertDialogDescription>
+											This action cannot be undone. This will permanently delete
+											your account from our servers.
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel variant="destructive">
+											Cancelar
+										</AlertDialogCancel>
+										<AlertDialogAction
+											variant="secondaryColor"
+											onClick={() => logout()}
+										>
+											Si, Cerrar sesión
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						)}
+
+						{user && (
+							<Link to="admin">
+								<Button className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
+									Panel Admin
+								</Button>
+							</Link>
+						)}
 						<Button
 							variant="ghost"
 							size="icon"
