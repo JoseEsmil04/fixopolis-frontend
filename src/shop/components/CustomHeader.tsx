@@ -26,7 +26,8 @@ import {
 export const CustomHeader = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const { categorySlug: category } = useParams()
-	const { user, logout } = useAuthStore()
+	const { authStatus, userIsAdmin, userIsEmployee, userisCustomer, logout } =
+		useAuthStore()
 
 	return (
 		<header className="sticky top-0 z-50 w-full bg-[#1E293B] shadow-lg">
@@ -81,7 +82,7 @@ export const CustomHeader = () => {
 
 					{/* Actions */}
 					<div className="flex items-center gap-2">
-						{!user ? (
+						{authStatus === 'not-authenticated' ? (
 							<Link to="auth/login">
 								<Button
 									variant="ghost"
@@ -125,24 +126,27 @@ export const CustomHeader = () => {
 							</AlertDialog>
 						)}
 
-						{user && (
+						{(userIsAdmin() || userIsEmployee()) && (
 							<Link to="admin">
 								<Button className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
 									Panel Admin
 								</Button>
 							</Link>
 						)}
-						<Button
-							variant="ghost"
-							size="icon"
-							className="relative text-white hover:bg-white/10 rounded-full"
-						>
-							<ShoppingCart className="h-5 w-5" />
-							<Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-[#0D9668] p-0 text-xs text-white flex items-center justify-center border-2 border-[#1E293B]">
-								3
-							</Badge>
-							<span className="sr-only">Carrito</span>
-						</Button>
+
+						{userisCustomer() && (
+							<Button
+								variant="ghost"
+								size="icon"
+								className="relative text-white hover:bg-white/10 rounded-full"
+							>
+								<ShoppingCart className="h-5 w-5" />
+								<Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-[#0D9668] p-0 text-xs text-white flex items-center justify-center border-2 border-[#1E293B]">
+									3
+								</Badge>
+								<span className="sr-only">Carrito</span>
+							</Button>
+						)}
 
 						{/* Mobile menu */}
 						<Sheet open={isOpen} onOpenChange={setIsOpen}>

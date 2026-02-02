@@ -8,15 +8,16 @@ import {
 import { Toaster } from 'sonner'
 import { appRouter } from './app.router'
 import type { PropsWithChildren } from 'react'
-import { checkAuthAction } from './auth/actions/check-auth.action'
 import { CustomLoading } from './components/custom/CustomLoading'
+import { useAuthStore } from './auth/store/auth.store'
 
 const queryClient = new QueryClient()
 
 export const CheckAuthProvider = ({ children }: PropsWithChildren) => {
+	const { checkAuthStatus } = useAuthStore()
 	const { isLoading } = useQuery({
 		queryKey: ['auth'],
-		queryFn: () => checkAuthAction(),
+		queryFn: () => checkAuthStatus(),
 		retry: false,
 		refetchInterval: 1000 * 60 * 1.5,
 		refetchOnWindowFocus: true

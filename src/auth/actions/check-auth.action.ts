@@ -1,5 +1,5 @@
 import { fixopolisApi } from '@/api/fixopolis.api'
-import type { AuthResponse } from '../interfaces/AuthResponse'
+import type { AuthResponse } from '../interfaces/auth.response'
 
 export const checkAuthAction = async (): Promise<AuthResponse> => {
 	const token = localStorage.getItem('token')

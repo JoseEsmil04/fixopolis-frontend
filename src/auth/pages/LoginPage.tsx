@@ -32,7 +32,6 @@ export const LoginPage = () => {
 		const isLogged = await login(email, password)
 
 		if (isLogged) {
-			console.log('redireccionando al Home')
 			navigate('/')
 			return
 		}

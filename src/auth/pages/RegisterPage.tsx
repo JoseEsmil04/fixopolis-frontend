@@ -5,19 +5,73 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { EyeOffIcon, EyeIcon, GithubIcon } from 'lucide-react'
 import { GoogleIcon } from '../components/AuthIcons'
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectGroup,
+	SelectLabel,
+	SelectItem
+} from '@/components/ui/select'
+import { toast } from 'sonner'
+import { useAuthStore } from '../store/auth.store'
 
 export const RegisterPage = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	const [role, setRole] = useState<string | undefined>(undefined)
+	const { register } = useAuthStore()
+	const navigate = useNavigate()
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
+	const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
 		setIsLoading(true)
-		await new Promise((resolve) => setTimeout(resolve, 1500))
+
+		const formData = new FormData(event.target as HTMLFormElement)
+		const name = formData.get('name') as string
+		const email = formData.get('email') as string
+		const password = formData.get('password') as string
+		const confirmPassword = formData.get('confirmPassword') as string
+
+		if (password !== confirmPassword) {
+			toast.error(
+				'Las contraseñas no coinciden. Por favor, verifica la confirmación.'
+			)
+			setIsLoading(false)
+			return
+		}
+
+		if (!role) {
+			toast.error('El Rol es obligatorio. Por favor, selecciona un rol.')
+			setIsLoading(false)
+			return
+		}
+
+		try {
+			const isRegistered = await register({
+				name,
+				email,
+				password,
+				role: Number(role)
+			})
+
+			if (isRegistered) {
+				navigate('/')
+				return
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				toast.error(`${error}`)
+				setIsLoading(false)
+			}
+			return
+		}
+
 		setIsLoading(false)
 	}
 
@@ -62,11 +116,12 @@ export const RegisterPage = () => {
 						</p>
 					</div>
 
-					<form onSubmit={handleSubmit} className="space-y-5">
+					<form onSubmit={handleRegister} className="space-y-5">
 						<div className="space-y-2">
 							<Label htmlFor="name">Nombre completo</Label>
 							<Input
 								id="name"
+								name="name"
 								type="text"
 								placeholder="Juan Pérez"
 								required
@@ -79,6 +134,7 @@ export const RegisterPage = () => {
 							<Label htmlFor="email">Email</Label>
 							<Input
 								id="email"
+								name="email"
 								type="email"
 								placeholder="tu@email.com"
 								required
@@ -86,12 +142,28 @@ export const RegisterPage = () => {
 								className="h-11"
 							/>
 						</div>
+						<div className="space-y-2">
+							<Label htmlFor="role">Rol</Label>
+							<Select value={role} onValueChange={setRole}>
+								<SelectTrigger className="w-full h-11">
+									<SelectValue placeholder="Selecciona un rol" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>Rol</SelectLabel>
+										<SelectItem value="1">Empleado</SelectItem>
+										<SelectItem value="2">Cliente</SelectItem>
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</div>
 
 						<div className="space-y-2">
 							<Label htmlFor="password">Contraseña</Label>
 							<div className="relative">
 								<Input
 									id="password"
+									name="password"
 									type={showPassword ? 'text' : 'password'}
 									placeholder="••••••••"
 									required
@@ -120,6 +192,7 @@ export const RegisterPage = () => {
 							<div className="relative">
 								<Input
 									id="confirmPassword"
+									name="confirmPassword"
 									type={showConfirmPassword ? 'text' : 'password'}
 									placeholder="••••••••"
 									required

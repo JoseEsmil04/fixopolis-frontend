@@ -13,6 +13,10 @@ import { OrderPage } from './admin/pages/OrderPage'
 import { AdminProductsPage } from './admin/pages/AdminProductsPage'
 import { SettingsPage } from './admin/pages/SettingsPage'
 import { RegisterPage } from './auth/pages/RegisterPage'
+import {
+	AdminOrEmployeeRoute,
+	NotAuthenticatedRoute
+} from './auth/components/ProtectedRoutes'
 
 export const appRouter = createBrowserRouter([
 	{
@@ -35,7 +39,11 @@ export const appRouter = createBrowserRouter([
 	},
 	{
 		path: '/auth',
-		element: <AuthLayout />,
+		element: (
+			<NotAuthenticatedRoute>
+				<AuthLayout />
+			</NotAuthenticatedRoute>
+		),
 		children: [
 			{
 				index: true,
@@ -53,7 +61,11 @@ export const appRouter = createBrowserRouter([
 	},
 	{
 		path: '/admin',
-		element: <AdminLayout />,
+		element: (
+			<AdminOrEmployeeRoute>
+				<AdminLayout />
+			</AdminOrEmployeeRoute>
+		),
 		children: [
 			{
 				index: true,
