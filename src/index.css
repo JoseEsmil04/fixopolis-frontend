@@ -111,6 +111,21 @@
 	background: #94a3b8;
 }
 
+/* Dynamic sidebar adjustment */
+aside[data-collapsed="true"] ~ * {
+	margin-left: 5rem; /* 20px * 4 = 80px (w-20) + extra spacing */
+}
+
+aside[data-collapsed="false"] ~ * {
+	margin-left: 16rem; /* 64px * 4 = 256px (w-64) + extra spacing */
+}
+
+/* Main content container adjustment */
+.admin-main {
+	transition: margin-left 0.3s ease;
+	overflow: hidden;
+}
+
 @theme {
 	--font-gantari: 'Gantari', sans-serif;
 	--text-primary: '#6D28D9';

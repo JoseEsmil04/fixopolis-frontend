@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
 	Table,
 	TableBody,
@@ -10,13 +9,13 @@ import {
 	TableRow
 } from '@/components/ui/table'
 import {
-	Search,
 	Eye,
 	MoreHorizontal,
 	Package,
 	Clock,
 	CheckCircle,
-	XCircle
+	XCircle,
+	X
 } from 'lucide-react'
 import {
 	DropdownMenu,
@@ -25,77 +24,38 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Suspense } from 'react'
-import { AdminHeader } from '@/admin/components/AdminHeader'
+import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
+import { useQuery } from '@tanstack/react-query'
+import { getOrdersAction } from '../actions/get-orders.action'
+import { CustomLoading } from '@/components/custom/CustomLoading'
+import { useState } from 'react'
+import type { GetOrdersResponse } from '../interfaces/get-orders.response'
+import {
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogHeader,
+	AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 
-const ordenes = [
-	{
-		id: 'ORD-001',
-		cliente: 'Carlos Mendoza',
-		productos: 3,
-		total: '$450.00',
-		fecha: '21 Ene 2026',
-		estado: 'Completada'
-	},
-	{
-		id: 'ORD-002',
-		cliente: 'María González',
-		productos: 1,
-		total: '$180.00',
-		fecha: '21 Ene 2026',
-		estado: 'En proceso'
-	},
-	{
-		id: 'ORD-003',
-		cliente: 'Roberto Silva',
-		productos: 5,
-		total: '$890.00',
-		fecha: '20 Ene 2026',
-		estado: 'Pendiente'
-	},
-	{
-		id: 'ORD-004',
-		cliente: 'Ana Torres',
-		productos: 2,
-		total: '$320.00',
-		fecha: '20 Ene 2026',
-		estado: 'Completada'
-	},
-	{
-		id: 'ORD-005',
-		cliente: 'Luis Ramírez',
-		productos: 4,
-		total: '$560.00',
-		fecha: '19 Ene 2026',
-		estado: 'Cancelada'
-	},
-	{
-		id: 'ORD-006',
-		cliente: 'Carmen López',
-		productos: 2,
-		total: '$275.00',
-		fecha: '19 Ene 2026',
-		estado: 'En proceso'
-	}
-]
-
-const getStatusConfig = (estado: string) => {
-	switch (estado) {
-		case 'Completada':
+const getStatusConfig = (status: string) => {
+	switch (status) {
+		case 'Completed':
 			return {
 				icon: CheckCircle,
 				className: 'bg-secondary/15 text-secondary'
 			}
-		case 'En proceso':
+		case 'In Progress':
 			return {
 				icon: Clock,
 				className: 'bg-primary/15 text-primary'
 			}
-		case 'Pendiente':
+		case 'Pending':
 			return {
 				icon: Package,
 				className: 'bg-amber-500/15 text-amber-600'
 			}
-		case 'Cancelada':
+		case 'Cancelled':
 			return {
 				icon: XCircle,
 				className: 'bg-destructive/15 text-destructive'
@@ -109,12 +69,24 @@ const getStatusConfig = (estado: string) => {
 }
 
 export const OrderPage = () => {
+	const { data, isLoading } = useQuery<GetOrdersResponse[]>({
+		queryKey: ['orders'],
+		queryFn: () => getOrdersAction()
+	})
+
+	const [selectedOrder, setSelectedOrder] = useState<GetOrdersResponse | null>(
+		null
+	)
+
+	if (isLoading) return <CustomLoading item="Ordenes" />
+
+	const orders = data || []
+
 	return (
 		<>
-			<div className="pl-64 transition-all duration-300">
-				<AdminHeader />
-				<main className="p-6">
-					<div className="mb-6 flex items-center justify-between">
+			<AdminPageWrapper>
+				<div className="p-6 h-full flex flex-col overflow-hidden">
+					<div className="shrink-0 mb-6 flex items-center justify-between">
 						<div>
 							<h2 className="text-2xl font-bold text-foreground">Órdenes</h2>
 							<p className="text-muted-foreground">
@@ -127,7 +99,7 @@ export const OrderPage = () => {
 					</div>
 
 					{/* Stats Simplificados */}
-					<div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+					<div className="shrink-0 mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 						<Card>
 							<CardContent className="p-4">
 								<div className="flex items-center justify-between">
@@ -135,7 +107,9 @@ export const OrderPage = () => {
 										<p className="text-sm text-muted-foreground">
 											Total Órdenes
 										</p>
-										<p className="text-2xl font-bold text-foreground">156</p>
+										<p className="text-2xl font-bold text-foreground">
+											{orders.length}
+										</p>
 									</div>
 									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
 										<Package className="h-5 w-5 text-primary" />
@@ -148,7 +122,9 @@ export const OrderPage = () => {
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-sm text-muted-foreground">En Proceso</p>
-										<p className="text-2xl font-bold text-foreground">23</p>
+										<p className="text-2xl font-bold text-foreground">
+											{orders.filter((o) => o.status === 'In Progress').length}
+										</p>
 									</div>
 									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
 										<Clock className="h-5 w-5 text-primary" />
@@ -161,7 +137,9 @@ export const OrderPage = () => {
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-sm text-muted-foreground">Completadas</p>
-										<p className="text-2xl font-bold text-foreground">118</p>
+										<p className="text-2xl font-bold text-foreground">
+											{orders.filter((o) => o.status === 'Completed').length}
+										</p>
 									</div>
 									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
 										<CheckCircle className="h-5 w-5 text-secondary" />
@@ -175,7 +153,10 @@ export const OrderPage = () => {
 									<div>
 										<p className="text-sm text-muted-foreground">Ingresos</p>
 										<p className="text-2xl font-bold text-foreground">
-											$24,580
+											$
+											{orders
+												.reduce((sum, o) => sum + o.total, 0)
+												.toLocaleString('en-US')}
 										</p>
 									</div>
 									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
@@ -186,65 +167,62 @@ export const OrderPage = () => {
 						</Card>
 					</div>
 
-					<Card>
-						<CardHeader className="pb-4">
-							<div className="flex items-center justify-between">
-								<CardTitle className="text-lg font-semibold">Órdenes</CardTitle>
-								<div className="flex gap-2">
-									<div className="relative w-64">
-										<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-										<Input
-											placeholder="Buscar orden..."
-											className="pl-9 bg-muted border-0"
-										/>
-									</div>
+					<div className="flex-1 overflow-hidden">
+						<Card className="h-full flex flex-col">
+							<CardHeader className="pb-4 shrink-0">
+								<div className="flex items-center justify-between">
+									<CardTitle className="text-lg font-semibold">
+										Órdenes
+									</CardTitle>
+									<div className="flex gap-2"></div>
 								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<Suspense>
-								<Table>
-									<TableHeader>
-										<TableRow className="border-border hover:bg-transparent">
-											<TableHead className="text-muted-foreground">
-												ID
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Cliente
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Total
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Estado
-											</TableHead>
-											<TableHead className="text-muted-foreground w-12"></TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{ordenes.map((orden) => {
-											const statusConfig = getStatusConfig(orden.estado)
-											const StatusIcon = statusConfig.icon
-											return (
+							</CardHeader>
+							<CardContent className="flex-1 overflow-hidden">
+								<Suspense>
+									<Table>
+										<TableHeader>
+											<TableRow className="border-border hover:bg-transparent">
+												<TableHead className="text-muted-foreground">
+													ID
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Cliente
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Total
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Estado
+												</TableHead>
+												<TableHead className="text-muted-foreground w-12"></TableHead>
+											</TableRow>
+										</TableHeader>
+										<TableBody>
+											{orders.map((order) => (
 												<TableRow
-													key={orden.id}
+													key={order.id}
 													className="border-border hover:bg-muted/50"
 												>
 													<TableCell className="font-medium text-primary">
-														{orden.id}
+														{order.id.slice(-8)}
 													</TableCell>
 													<TableCell className="text-foreground">
-														{orden.cliente}
+														{order.userId.slice(-8)}
 													</TableCell>
 													<TableCell className="font-medium text-foreground">
-														{orden.total}
+														${order.total.toLocaleString('en-US')}
 													</TableCell>
 													<TableCell>
 														<span
-															className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusConfig.className}`}
+															className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusConfig(order.status).className}`}
 														>
-															<StatusIcon className="h-3.5 w-3.5" />
-															{orden.estado}
+															{(() => {
+																const StatusIcon = getStatusConfig(
+																	order.status
+																).icon
+																return <StatusIcon className="h-3.5 w-3.5" />
+															})()}
+															{order.status}
 														</span>
 													</TableCell>
 													<TableCell>
@@ -259,7 +237,9 @@ export const OrderPage = () => {
 																</Button>
 															</DropdownMenuTrigger>
 															<DropdownMenuContent align="end">
-																<DropdownMenuItem>
+																<DropdownMenuItem
+																	onClick={() => setSelectedOrder(order)}
+																>
 																	<Eye className="mr-2 h-4 w-4" />
 																	Ver detalles
 																</DropdownMenuItem>
@@ -273,15 +253,137 @@ export const OrderPage = () => {
 														</DropdownMenu>
 													</TableCell>
 												</TableRow>
-											)
-										})}
-									</TableBody>
-								</Table>
-							</Suspense>
-						</CardContent>
-					</Card>
-				</main>
-			</div>
+											))}
+										</TableBody>
+									</Table>
+								</Suspense>
+							</CardContent>
+						</Card>
+					</div>
+				</div>
+			</AdminPageWrapper>
+
+			{/* Order Details Dialog */}
+			<AlertDialog
+				open={!!selectedOrder}
+				onOpenChange={() => setSelectedOrder(null)}
+			>
+				<AlertDialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+					<AlertDialogHeader className="flex flex-row items-center justify-between">
+						<AlertDialogTitle>Detalles de la Orden</AlertDialogTitle>
+						<button
+							onClick={() => setSelectedOrder(null)}
+							className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+						>
+							<X className="h-4 w-4" />
+							<span className="sr-only">Close</span>
+						</button>
+					</AlertDialogHeader>
+					{selectedOrder && (
+						<AlertDialogDescription asChild>
+							<div className="space-y-6">
+								{/* Order Info */}
+								<div className="grid grid-cols-2 gap-4">
+									<div>
+										<p className="text-sm font-medium text-muted-foreground">
+											ID de Orden
+										</p>
+										<p className="font-mono text-sm">{selectedOrder.id}</p>
+									</div>
+									<div>
+										<p className="text-sm font-medium text-muted-foreground">
+											ID de Usuario
+										</p>
+										<p className="font-mono text-sm">{selectedOrder.userId}</p>
+									</div>
+									<div>
+										<p className="text-sm font-medium text-muted-foreground">
+											Fecha
+										</p>
+										<p className="text-sm">
+											{new Date(selectedOrder.createdAt).toLocaleString()}
+										</p>
+									</div>
+									<div>
+										<p className="text-sm font-medium text-muted-foreground">
+											Estado
+										</p>
+										<span
+											className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusConfig(selectedOrder.status).className}`}
+										>
+											{(() => {
+												const StatusIcon = getStatusConfig(
+													selectedOrder.status
+												).icon
+												return <StatusIcon className="h-3.5 w-3.5" />
+											})()}
+											{selectedOrder.status}
+										</span>
+									</div>
+								</div>
+
+								{/* Items Table */}
+								<div>
+									<h4 className="font-medium mb-3">Productos</h4>
+									<div className="border rounded-lg overflow-hidden">
+										<table className="w-full">
+											<thead className="bg-muted/50">
+												<tr>
+													<th className="text-left p-3 text-sm font-medium">
+														Código
+													</th>
+													<th className="text-left p-3 text-sm font-medium">
+														Producto
+													</th>
+													<th className="text-center p-3 text-sm font-medium">
+														Cantidad
+													</th>
+													<th className="text-right p-3 text-sm font-medium">
+														Precio Unit.
+													</th>
+													<th className="text-right p-3 text-sm font-medium">
+														Subtotal
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{selectedOrder.items.map((item) => (
+													<tr key={item.productId} className="border-t">
+														<td className="p-3 text-sm">{item.productCode}</td>
+														<td className="p-3 text-sm">{item.productName}</td>
+														<td className="p-3 text-sm text-center">
+															{item.quantity}
+														</td>
+														<td className="p-3 text-sm text-right">
+															${item.unitPrice.toLocaleString('en-US')}
+														</td>
+														<td className="p-3 text-sm text-right font-medium">
+															$
+															{(item.unitPrice * item.quantity).toLocaleString(
+																'en-US'
+															)}
+														</td>
+													</tr>
+												))}
+											</tbody>
+											<tfoot>
+												<tr className="bg-muted/30">
+													<td colSpan={4} className="p-3 text-sm font-medium">
+														Total
+													</td>
+													<td className="p-3 text-sm font-bold text-right">
+														${selectedOrder.total.toLocaleString('en-US')}
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+							</div>
+						</AlertDialogDescription>
+					)}
+				</AlertDialogContent>
+			</AlertDialog>
 		</>
 	)
 }

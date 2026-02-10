@@ -19,8 +19,8 @@ const data = [
 
 export function ServicesChart() {
 	return (
-		<div className="rounded-xl border border-border bg-card p-5">
-			<div className="mb-6">
+		<div className="rounded-xl border border-border bg-card p-5 h-full flex flex-col">
+			<div className="mb-2">
 				<h3 className="text-lg font-semibold text-card-foreground">
 					Órdenes por Mes
 				</h3>
@@ -28,7 +28,7 @@ export function ServicesChart() {
 					Evolución de órdenes completadas
 				</p>
 			</div>
-			<div className="h-70">
+			<div className="flex-1 min-h-0">
 				<ResponsiveContainer width="100%" height="100%">
 					<AreaChart data={data}>
 						<defs>

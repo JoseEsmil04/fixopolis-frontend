@@ -1,21 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AdminHeader } from '@/admin/components/AdminHeader'
+import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 
 export const SettingsPage = () => {
 	return (
-		<>
-			<div className="pl-64 transition-all duration-300">
-				<AdminHeader />
-				<main className="p-6">
-					<div className="mb-6">
-						<h2 className="text-2xl font-bold text-foreground">
-							Configuración
-						</h2>
-						<p className="text-muted-foreground">
-							Configura tu tienda y preferencias
-						</p>
-					</div>
+		<AdminPageWrapper>
+			<div className="p-6 h-full flex flex-col overflow-hidden">
+				<div className=" mb-6">
+					<h2 className="text-2xl font-bold text-foreground">Configuración</h2>
+					<p className="text-muted-foreground">
+						Configura tu tienda y preferencias
+					</p>
+				</div>
 
+				<div className="flex-1 overflow-y-auto">
 					<div className="grid gap-6">
 						<Card>
 							<CardHeader>
@@ -44,8 +41,8 @@ export const SettingsPage = () => {
 							</CardContent>
 						</Card>
 					</div>
-				</main>
+				</div>
 			</div>
-		</>
+		</AdminPageWrapper>
 	)
 }

@@ -17,6 +17,7 @@ import {
 	AdminOrEmployeeRoute,
 	NotAuthenticatedRoute
 } from './auth/components/ProtectedRoutes'
+import { AdminProductPage } from './admin/pages/AdminProductPage'
 
 export const appRouter = createBrowserRouter([
 	{
@@ -80,8 +81,12 @@ export const appRouter = createBrowserRouter([
 				element: <OrderPage />
 			},
 			{
-				path: 'adminProducts',
+				path: 'products',
 				element: <AdminProductsPage />
+			},
+			{
+				path: 'products/:id',
+				element: <AdminProductPage />
 			},
 			{
 				path: 'settings',

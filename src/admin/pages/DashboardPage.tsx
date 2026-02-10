@@ -1,51 +1,43 @@
-import { ActivityFeed } from '@/admin/components/ActivityFeed'
-import { AdminHeader } from '@/admin/components/AdminHeader'
 import { RecentOrders } from '@/admin/components/RecentOrders'
 import { ServicesChart } from '@/admin/components/ServicesChart'
 import { StatsCards } from '@/admin/components/StatsCards'
+import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 import { useAuthStore } from '@/auth/store/auth.store'
 import { useNavigate } from 'react-router'
 
 export const DashboardPage = () => {
-	const { user } = useAuthStore()
+	const { user, userIsAdmin } = useAuthStore()
 	const navigate = useNavigate()
 
-	if (!user) {
+	if (!userIsAdmin()) {
 		navigate('/')
 		return
 	}
 
 	return (
-		<div className="pl-64 transition-all duration-300">
-			<AdminHeader />
-			<main className="p-6">
-				<div className="mb-6">
+		<AdminPageWrapper>
+			<div className="p-6 flex flex-col bg-muted/30 overflow-hidden">
+				<div className="mb-4">
 					<h2 className="text-2xl font-bold text-foreground">
-						Bienvenido de vuelta, {user.name}
+						Bienvenido de vuelta, {user!.name}
 					</h2>
 					<p className="text-muted-foreground">
 						Aquí tienes un resumen de la actividad de Fixopolis
 					</p>
 				</div>
+				<div className="mb-4">
+					<StatsCards />
+				</div>
 
-				{/* Stats */}
-				<StatsCards />
-
-				{/* Charts and Activity */}
-				<div className="mt-6 grid gap-6 lg:grid-cols-5">
-					<div className="lg:col-span-3">
+				<div className="flex-1 grid gap-4 lg:grid-cols-3">
+					<div className="lg:col-span-2">
 						<ServicesChart />
 					</div>
-					<div className="lg:col-span-2">
-						<ActivityFeed />
+					<div className="">
+						<RecentOrders />
 					</div>
 				</div>
-
-				{/* Recent Orders Table */}
-				<div className="mt-6">
-					<RecentOrders />
-				</div>
-			</main>
-		</div>
+			</div>
+		</AdminPageWrapper>
 	)
 }

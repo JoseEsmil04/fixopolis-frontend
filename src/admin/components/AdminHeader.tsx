@@ -1,32 +1,75 @@
-import { Search, Bell } from 'lucide-react'
+import { useAuthStore } from '@/auth/store/auth.store'
+import { Search, Bell, Settings } from 'lucide-react'
+import { useRef } from 'react'
+import { useSearchParams } from 'react-router'
 
-export const AdminHeader = () => {
+export function AdminHeader() {
+	const [searchParams, setSearchParams] = useSearchParams()
+	const { user } = useAuthStore()
+	const query = searchParams.get('query') || ''
+	const searchInputRef = useRef<HTMLInputElement>(null)
+	const handleSearchChange = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key !== 'Enter') return
+		const searchValue = searchInputRef.current?.value || ''
+
+		setSearchParams((prev) => {
+			if (searchValue.trim()) {
+				prev.set('query', searchValue.trim())
+			} else {
+				prev.delete('query')
+			}
+			return prev
+		})
+	}
+
 	return (
-		<header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-sm">
-			<div className="flex items-center gap-4">
-				<h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+		<header className="sticky top-0 z-30 flex h-16 items-center justify-end border-b border-border bg-background/90 px-6 backdrop-blur-md">
+			{/* Search */}
+			<div className="relative mr-4 lg:mr-8">
+				<Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+				<input
+					type="search"
+					ref={searchInputRef}
+					defaultValue={query}
+					placeholder="Productos, ordenes, clientes..."
+					className="h-9 w-56 lg:w-72 rounded-full border border-border bg-muted/50 pl-11 pr-6 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:bg-background focus:outline-none focus:ring-1 focus:ring-primary/50"
+					onKeyDown={(e) => handleSearchChange(e)}
+				/>
 			</div>
-			<div className="flex items-center gap-3">
-				{/* Search */}
-				<div className="relative hidden md:block">
-					<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-					<input
-						type="text"
-						placeholder="Buscar..."
-						className="h-9 w-64 rounded-lg border border-border bg-input pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-					/>
-				</div>
-
+			<button
+				type="button"
+				className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+				aria-label="Buscar"
+			>
+				<Search className="h-5 w-5" />
+			</button>
+			{/* Actions */}
+			<div className="flex items-center gap-1">
+				{/* Settings */}
+				<button
+					type="button"
+					className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+					aria-label="Ajustes"
+				>
+					<Settings className="h-5 w-5" />
+				</button>
 				{/* Notifications */}
 				<button
 					type="button"
-					className="relative rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+					className="relative rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+					aria-label="Notificaciones"
 				>
 					<Bell className="h-5 w-5" />
-					<span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
+					<span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
 						3
 					</span>
 				</button>
+				{/* Separator */}
+				<div className="mx-2 h-6-px bg-border" />
+				{/* User Avatar */}
+				<div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+					<span className="text-sm font-semibold">{user!.name.at(0)}</span>
+				</div>
 			</div>
 		</header>
 	)
