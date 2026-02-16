@@ -16,12 +16,12 @@ export const DashboardPage = () => {
 
 	return (
 		<AdminPageWrapper>
-			<div className="p-6 flex flex-col bg-muted/30 overflow-hidden">
+			<div className="flex flex-col bg-muted/30 overflow-hidden">
 				<div className="mb-4">
-					<h2 className="text-2xl font-bold text-foreground">
+					<h2 className="text-xl lg:text-2xl font-bold text-foreground">
 						Bienvenido de vuelta, {user!.name}
 					</h2>
-					<p className="text-muted-foreground">
+					<p className="text-sm lg:text-base text-muted-foreground">
 						Aquí tienes un resumen de la actividad de Fixopolis
 					</p>
 				</div>
@@ -29,7 +29,7 @@ export const DashboardPage = () => {
 					<StatsCards />
 				</div>
 
-				<div className="flex-1 grid gap-4 lg:grid-cols-3">
+				<div className="grid gap-4 lg:grid-cols-3">
 					<div className="lg:col-span-2">
 						<ServicesChart />
 					</div>

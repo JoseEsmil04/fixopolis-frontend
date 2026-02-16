@@ -1,9 +1,13 @@
 import { useAuthStore } from '@/auth/store/auth.store'
-import { Search, Bell, Settings } from 'lucide-react'
+import { Search, Bell, Settings, Menu } from 'lucide-react'
 import { useRef } from 'react'
 import { useSearchParams } from 'react-router'
 
-export function AdminHeader() {
+interface AdminHeaderProps {
+	onMobileMenuToggle?: () => void
+}
+
+export function AdminHeader({ onMobileMenuToggle }: AdminHeaderProps) {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const { user } = useAuthStore()
 	const query = searchParams.get('query') || ''
@@ -23,9 +27,19 @@ export function AdminHeader() {
 	}
 
 	return (
-		<header className="sticky top-0 z-30 flex h-16 items-center justify-end border-b border-border bg-background/90 px-6 backdrop-blur-md">
+		<header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 lg:justify-end lg:px-6 backdrop-blur-md">
+			{/* Mobile Menu Button */}
+			<button
+				type="button"
+				onClick={onMobileMenuToggle}
+				className="lg:hidden rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+				aria-label="Menú"
+			>
+				<Menu className="h-5 w-5" />
+			</button>
+
 			{/* Search */}
-			<div className="relative mr-4 lg:mr-8">
+			<div className="relative mr-4 lg:mr-8 hidden lg:block">
 				<Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 				<input
 					type="search"
@@ -38,7 +52,7 @@ export function AdminHeader() {
 			</div>
 			<button
 				type="button"
-				className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+				className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
 				aria-label="Buscar"
 			>
 				<Search className="h-5 w-5" />

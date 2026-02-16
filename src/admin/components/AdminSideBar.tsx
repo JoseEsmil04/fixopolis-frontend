@@ -23,6 +23,7 @@ const navItems = [
 interface Props {
 	isCollapsed: boolean
 	onToggle: () => void
+	isMobile?: boolean
 }
 
 export function AdminSidebar({ isCollapsed, onToggle }: Props) {
@@ -54,7 +55,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: Props) {
 					<button
 						type="button"
 						onClick={() => onToggle()}
-						className="rounded-md p-1 cursor-pointer text-muted-foreground transition-colors font-bold hover:text-secondary"
+						className="rounded-md p-1 cursor-pointer text-muted-foreground transition-colors font-bold hover:text-secondary hidden lg:block"
 					>
 						<ChevronLeft
 							className={cn(

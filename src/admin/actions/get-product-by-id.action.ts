@@ -1,5 +1,5 @@
 import { fixopolisApi } from '@/api/fixopolis.api'
-import type { Product } from '../interfaces/product.interface'
+import type { Product } from '@/shop/interfaces/product.interface'
 
 export const getProductByIdAction = async (id: string): Promise<Product> => {
 	if (!id) throw new Error('Id is required!')

@@ -4,40 +4,40 @@ import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 export const SettingsPage = () => {
 	return (
 		<AdminPageWrapper>
-			<div className="p-6 h-full flex flex-col overflow-hidden">
-				<div className=" mb-6">
-					<h2 className="text-2xl font-bold text-foreground">Configuración</h2>
-					<p className="text-muted-foreground">
+			<div className="h-full flex flex-col overflow-hidden">
+				<div className="mb-4 lg:mb-6">
+					<h2 className="text-xl lg:text-2xl font-bold text-foreground">Configuración</h2>
+					<p className="text-sm text-muted-foreground">
 						Configura tu tienda y preferencias
 					</p>
 				</div>
 
 				<div className="flex-1 overflow-y-auto">
-					<div className="grid gap-6">
+					<div className="grid gap-4 lg:gap-6">
 						<Card>
 							<CardHeader>
-								<CardTitle>Información de la Tienda</CardTitle>
+								<CardTitle className="text-base lg:text-lg">Información de la Tienda</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<p>Configuración general de la tienda</p>
+								<p className="text-sm text-muted-foreground">Configuración general de la tienda</p>
 							</CardContent>
 						</Card>
 
 						<Card>
 							<CardHeader>
-								<CardTitle>Métodos de Pago</CardTitle>
+								<CardTitle className="text-base lg:text-lg">Métodos de Pago</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<p>Configura los métodos de pago aceptados</p>
+								<p className="text-sm text-muted-foreground">Configura los métodos de pago aceptados</p>
 							</CardContent>
 						</Card>
 
 						<Card>
 							<CardHeader>
-								<CardTitle>Notificaciones</CardTitle>
+								<CardTitle className="text-base lg:text-lg">Notificaciones</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<p>Preferencias de notificación</p>
+								<p className="text-sm text-muted-foreground">Preferencias de notificación</p>
 							</CardContent>
 						</Card>
 					</div>

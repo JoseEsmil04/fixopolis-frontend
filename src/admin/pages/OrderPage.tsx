@@ -23,7 +23,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Suspense } from 'react'
 import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 import { useQuery } from '@tanstack/react-query'
 import { getOrdersAction } from '../actions/get-orders.action'
@@ -85,82 +84,75 @@ export const OrderPage = () => {
 	return (
 		<>
 			<AdminPageWrapper>
-				<div className="p-6 h-full flex flex-col overflow-hidden">
-					<div className="shrink-0 mb-6 flex items-center justify-between">
+				<div className="h-full flex flex-col overflow-hidden">
+					<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div>
-							<h2 className="text-2xl font-bold text-foreground">Órdenes</h2>
-							<p className="text-muted-foreground">
+							<h2 className="text-xl lg:text-2xl font-bold text-foreground">Órdenes</h2>
+							<p className="text-sm text-muted-foreground">
 								Administra y rastrea todas las órdenes
 							</p>
 						</div>
-						<Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+						<Button className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
 							Nueva Orden
 						</Button>
 					</div>
 
 					{/* Stats Simplificados */}
-					<div className="shrink-0 mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+					<div className="shrink-0 mb-4 lg:mb-6 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
 						<Card>
-							<CardContent className="p-4">
+							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-sm text-muted-foreground">
-											Total Órdenes
-										</p>
-										<p className="text-2xl font-bold text-foreground">
-											{orders.length}
-										</p>
+										<p className="text-xs lg:text-sm text-muted-foreground">Total Órdenes</p>
+										<p className="text-xl lg:text-2xl font-bold text-foreground">{orders.length}</p>
 									</div>
-									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-										<Package className="h-5 w-5 text-primary" />
+									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-primary/10">
+										<Package className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="p-4">
+							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-sm text-muted-foreground">En Proceso</p>
-										<p className="text-2xl font-bold text-foreground">
+										<p className="text-xs lg:text-sm text-muted-foreground">En Proceso</p>
+										<p className="text-xl lg:text-2xl font-bold text-foreground">
 											{orders.filter((o) => o.status === 'In Progress').length}
 										</p>
 									</div>
-									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-										<Clock className="h-5 w-5 text-primary" />
+									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-primary/10">
+										<Clock className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="p-4">
+							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-sm text-muted-foreground">Completadas</p>
-										<p className="text-2xl font-bold text-foreground">
+										<p className="text-xs lg:text-sm text-muted-foreground">Completadas</p>
+										<p className="text-xl lg:text-2xl font-bold text-foreground">
 											{orders.filter((o) => o.status === 'Completed').length}
 										</p>
 									</div>
-									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
-										<CheckCircle className="h-5 w-5 text-secondary" />
+									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-secondary/10">
+										<CheckCircle className="h-4 w-4 lg:h-5 lg:w-5 text-secondary" />
 									</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="p-4">
+							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-sm text-muted-foreground">Ingresos</p>
-										<p className="text-2xl font-bold text-foreground">
-											$
-											{orders
-												.reduce((sum, o) => sum + o.total, 0)
-												.toLocaleString('en-US')}
+										<p className="text-xs lg:text-sm text-muted-foreground">Ingresos</p>
+										<p className="text-lg lg:text-2xl font-bold text-foreground">
+											${orders.reduce((sum, o) => sum + o.total, 0).toLocaleString('en-US')}
 										</p>
 									</div>
-									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
-										<span className="text-lg font-bold text-secondary">$</span>
+									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-secondary/10">
+										<span className="text-sm lg:text-lg font-bold text-secondary">$</span>
 									</div>
 								</div>
 							</CardContent>
@@ -171,29 +163,18 @@ export const OrderPage = () => {
 						<Card className="h-full flex flex-col">
 							<CardHeader className="pb-4 shrink-0">
 								<div className="flex items-center justify-between">
-									<CardTitle className="text-lg font-semibold">
-										Órdenes
-									</CardTitle>
-									<div className="flex gap-2"></div>
+									<CardTitle className="text-lg font-semibold">Órdenes</CardTitle>
 								</div>
 							</CardHeader>
 							<CardContent className="flex-1 overflow-hidden">
-								<Suspense>
+								<div className="overflow-x-auto">
 									<Table>
 										<TableHeader>
 											<TableRow className="border-border hover:bg-transparent">
-												<TableHead className="text-muted-foreground">
-													ID
-												</TableHead>
-												<TableHead className="text-muted-foreground">
-													Cliente
-												</TableHead>
-												<TableHead className="text-muted-foreground">
-													Total
-												</TableHead>
-												<TableHead className="text-muted-foreground">
-													Estado
-												</TableHead>
+												<TableHead className="text-muted-foreground">ID</TableHead>
+												<TableHead className="text-muted-foreground">Cliente</TableHead>
+												<TableHead className="text-muted-foreground">Total</TableHead>
+												<TableHead className="text-muted-foreground">Estado</TableHead>
 												<TableHead className="text-muted-foreground w-12"></TableHead>
 											</TableRow>
 										</TableHeader>
@@ -203,10 +184,10 @@ export const OrderPage = () => {
 													key={order.id}
 													className="border-border hover:bg-muted/50"
 												>
-													<TableCell className="font-medium text-primary">
+													<TableCell className="font-medium text-primary text-sm">
 														{order.id.slice(-8)}
 													</TableCell>
-													<TableCell className="text-foreground">
+													<TableCell className="text-foreground text-sm">
 														{order.userId.slice(-8)}
 													</TableCell>
 													<TableCell className="font-medium text-foreground">
@@ -214,15 +195,13 @@ export const OrderPage = () => {
 													</TableCell>
 													<TableCell>
 														<span
-															className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusConfig(order.status).className}`}
+															className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getStatusConfig(order.status).className}`}
 														>
 															{(() => {
-																const StatusIcon = getStatusConfig(
-																	order.status
-																).icon
-																return <StatusIcon className="h-3.5 w-3.5" />
+																const StatusIcon = getStatusConfig(order.status).icon
+																return <StatusIcon className="h-3 w-3" />
 															})()}
-															{order.status}
+															<span className="hidden sm:inline">{order.status}</span>
 														</span>
 													</TableCell>
 													<TableCell>
@@ -237,18 +216,12 @@ export const OrderPage = () => {
 																</Button>
 															</DropdownMenuTrigger>
 															<DropdownMenuContent align="end">
-																<DropdownMenuItem
-																	onClick={() => setSelectedOrder(order)}
-																>
+																<DropdownMenuItem onClick={() => setSelectedOrder(order)}>
 																	<Eye className="mr-2 h-4 w-4" />
 																	Ver detalles
 																</DropdownMenuItem>
-																<DropdownMenuItem>
-																	Editar estado
-																</DropdownMenuItem>
-																<DropdownMenuItem className="text-destructive">
-																	Cancelar orden
-																</DropdownMenuItem>
+																<DropdownMenuItem>Editar estado</DropdownMenuItem>
+																<DropdownMenuItem className="text-destructive">Cancelar orden</DropdownMenuItem>
 															</DropdownMenuContent>
 														</DropdownMenu>
 													</TableCell>
@@ -256,7 +229,7 @@ export const OrderPage = () => {
 											))}
 										</TableBody>
 									</Table>
-								</Suspense>
+								</div>
 							</CardContent>
 						</Card>
 					</div>

@@ -43,16 +43,16 @@ export const AdminProductsPage = () => {
 
 	return (
 		<AdminPageWrapper>
-			<div className="p-6 h-full flex flex-col overflow-hidden">
-				<div className="mb-6 flex items-center justify-between">
+			<div className="h-full flex flex-col overflow-hidden">
+				<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 					<div>
-						<h1 className="text-2xl font-bold text-foreground">Productos</h1>
-						<p className="text-muted-foreground">
+						<h1 className="text-xl lg:text-2xl font-bold text-foreground">Productos</h1>
+						<p className="text-sm text-muted-foreground">
 							Gestiona tu catálogo de productos
 						</p>
 					</div>
 					<Link to={'/admin/products/new'}>
-						<Button>
+						<Button className="w-full sm:w-auto">
 							<Plus className="mr-2 h-4 w-4" />
 							Nuevo Producto
 						</Button>
@@ -69,107 +69,109 @@ export const AdminProductsPage = () => {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead className="w-25">Imagen</TableHead>
-										<TableHead>Código</TableHead>
-										<TableHead>Producto</TableHead>
-										<TableHead>Categoría</TableHead>
-										<TableHead className="text-right">Precio</TableHead>
-										<TableHead className="text-center">Stock</TableHead>
-										<TableHead className="text-center">Estado</TableHead>
-										<TableHead className="w-25">Acciones</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{products.map((product) => (
-										<TableRow key={product.id}>
-											<TableCell>
-												<div className="relative h-16 w-16 overflow-hidden rounded-md border bg-muted">
-													{product.imageUrl ? (
-														<img
-															src={product.imageUrl || '/placeholder.svg'}
-															alt={product.name}
-															className="object-cover w-full h-full"
-															sizes="64px"
-														/>
-													) : (
-														<div className="flex h-full w-full items-center justify-center">
-															<Package className="h-6 w-6 text-muted-foreground" />
-														</div>
-													)}
-												</div>
-											</TableCell>
-											<TableCell>
-												<code className="rounded bg-muted px-2 py-1 text-sm font-mono">
-													{product.code}
-												</code>
-											</TableCell>
-											<TableCell>
-												<div>
-													<div className="font-medium">{product.name}</div>
-													<div className="text-sm text-muted-foreground line-clamp-1">
-														{product.description}
-													</div>
-												</div>
-											</TableCell>
-											<TableCell>
-												<span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
-													{product.categoryName}
-												</span>
-											</TableCell>
-											<TableCell className="text-right font-medium">
-												${product.price.toLocaleString('es-MX')}
-											</TableCell>
-											<TableCell className="text-center">
-												<span
-													className={`font-medium ${
-														product.stock === 0
-															? 'text-destructive'
-															: product.stock < 20
-																? 'text-amber-500'
-																: 'text-foreground'
-													}`}
-												>
-													{product.stock}
-												</span>
-											</TableCell>
-											<TableCell className="text-center">
-												<span
-													className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-														product.isAvailable
-															? 'bg-emerald-500/10 text-emerald-600'
-															: 'bg-muted text-muted-foreground'
-													}`}
-												>
-													{product.isAvailable ? 'Disponible' : 'No disponible'}
-												</span>
-											</TableCell>
-											<TableCell>
-												<div className="flex gap-1">
-													<Link
-														to={`/admin/products/${product.id}`}
-														className="h-8 w-8 p-0"
-													>
-														<Pencil className="h-4 w-4" />
-														<span className="sr-only">Editar</span>
-													</Link>
-													<Button
-														variant="ghost"
-														size="sm"
-														className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-														onClick={() => openDeleteDialog(product)}
-													>
-														<Trash2 className="h-4 w-4" />
-														<span className="sr-only">Eliminar</span>
-													</Button>
-												</div>
-											</TableCell>
+							<div className="overflow-x-auto">
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead className="w-16">Imagen</TableHead>
+											<TableHead className="whitespace-nowrap">Código</TableHead>
+											<TableHead className="whitespace-nowrap">Producto</TableHead>
+											<TableHead className="whitespace-nowrap hidden md:table-cell">Categoría</TableHead>
+											<TableHead className="text-right whitespace-nowrap">Precio</TableHead>
+											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">Stock</TableHead>
+											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">Estado</TableHead>
+											<TableHead className="w-20">Acciones</TableHead>
 										</TableRow>
-									))}
-								</TableBody>
-							</Table>
+									</TableHeader>
+									<TableBody>
+										{products.map((product) => (
+											<TableRow key={product.id}>
+												<TableCell>
+													<div className="relative h-12 w-12 lg:h-16 lg:w-16 overflow-hidden rounded-md border bg-muted">
+														{product.imageUrl ? (
+															<img
+																src={product.imageUrl || '/placeholder.svg'}
+																alt={product.name}
+																className="object-cover w-full h-full"
+																sizes="64px"
+															/>
+														) : (
+															<div className="flex h-full w-full items-center justify-center">
+																<Package className="h-5 w-5 lg:h-6 lg:w-6 text-muted-foreground" />
+															</div>
+														)}
+													</div>
+												</TableCell>
+												<TableCell>
+													<code className="rounded bg-muted px-1.5 lg:px-2 py-1 text-xs lg:text-sm font-mono">
+														{product.code}
+													</code>
+												</TableCell>
+												<TableCell>
+													<div>
+														<div className="font-medium text-sm lg:text-base">{product.name}</div>
+														<div className="text-xs lg:text-sm text-muted-foreground line-clamp-1 hidden sm:table-cell">
+															{product.description}
+														</div>
+													</div>
+												</TableCell>
+												<TableCell className="hidden md:table-cell">
+													<span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+														{product.categoryName}
+													</span>
+												</TableCell>
+												<TableCell className="text-right font-medium whitespace-nowrap">
+													${product.price.toLocaleString('es-MX')}
+												</TableCell>
+												<TableCell className="text-center hidden sm:table-cell">
+													<span
+														className={`font-medium ${
+															product.stock === 0
+																? 'text-destructive'
+																: product.stock < 20
+																	? 'text-amber-500'
+																	: 'text-foreground'
+														}`}
+													>
+														{product.stock}
+													</span>
+												</TableCell>
+												<TableCell className="text-center hidden sm:table-cell">
+													<span
+														className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+															product.isAvailable
+																? 'bg-emerald-500/10 text-emerald-600'
+																: 'bg-muted text-muted-foreground'
+														}`}
+													>
+														{product.isAvailable ? 'Activo' : 'Inactivo'}
+													</span>
+												</TableCell>
+												<TableCell>
+													<div className="flex gap-1">
+														<Link
+															to={`/admin/products/${product.id}`}
+															className="h-8 w-8 p-0"
+														>
+															<Pencil className="h-4 w-4" />
+															<span className="sr-only">Editar</span>
+														</Link>
+														<Button
+															variant="ghost"
+															size="sm"
+															className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+															onClick={() => openDeleteDialog(product)}
+														>
+															<Trash2 className="h-4 w-4" />
+															<span className="sr-only">Eliminar</span>
+														</Button>
+													</div>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</div>
 
 							{products.length === 0 && (
 								<div className="flex flex-col items-center justify-center py-12 text-center">
@@ -185,7 +187,9 @@ export const AdminProductsPage = () => {
 							)}
 
 							{/* Pagination */}
-							<CustomPagination totalPages={data!.totalPages} />
+							<div className="mt-4">
+								<CustomPagination totalPages={data!.totalPages} />
+							</div>
 						</CardContent>
 					</Card>
 				</div>

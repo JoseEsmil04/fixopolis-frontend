@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-	Sheet,
-	SheetContent,
-	SheetTrigger,
-	SheetTitle
-} from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ShoppingCart, Menu } from 'lucide-react'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useParams } from 'react-router'
@@ -80,13 +75,13 @@ export const CustomHeader = () => {
 						</Link>
 					</nav>
 
-					{/* Actions */}
-					<div className="flex items-center gap-2">
+					{/* Actions - Solo visibles en desktop (lg+) */}
+					<div className="hidden lg:flex items-center gap-2">
 						{authStatus === 'not-authenticated' ? (
 							<Link to="auth/login">
 								<Button
 									variant="ghost"
-									className="hidden sm:flex bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
+									className="bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
 								>
 									Iniciar sesión
 								</Button>
@@ -96,7 +91,7 @@ export const CustomHeader = () => {
 								<AlertDialogTrigger asChild>
 									<Button
 										variant="default"
-										className="hidden sm:flex bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
+										className="bg-[#1E293B] text-white/90 hover:text-white hover:bg-[#0D9668]/25 rounded-full"
 									>
 										Cerrar sesión
 									</Button>
@@ -128,7 +123,7 @@ export const CustomHeader = () => {
 
 						{(userIsAdmin() || userIsEmployee()) && (
 							<Link to="admin">
-								<Button className="hidden sm:flex bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
+								<Button className="bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
 									Panel Admin
 								</Button>
 							</Link>
@@ -147,29 +142,34 @@ export const CustomHeader = () => {
 								<span className="sr-only">Carrito</span>
 							</Button>
 						)}
+					</div>
 
-						{/* Mobile menu */}
-						<Sheet open={isOpen} onOpenChange={setIsOpen}>
-							<SheetTrigger asChild>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="lg:hidden text-white hover:bg-white/10 rounded-full"
-								>
-									<Menu className="h-5 w-5" />
-									<span className="sr-only">Menú</span>
-								</Button>
-							</SheetTrigger>
-							<SheetContent
-								side="right"
-								className="w-75 bg-[#1E293B] border-white/10"
+					{/* Mobile menu button */}
+					<Sheet open={isOpen} onOpenChange={setIsOpen}>
+						<SheetTrigger asChild>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="lg:hidden text-white hover:bg-white/10 rounded-full"
 							>
-								<SheetTitle className="font-serif text-white">Menú</SheetTitle>
-								<div className="mt-6 flex flex-col gap-4">
-									<nav className="flex flex-col gap-1">
+								<Menu className="h-5 w-5" />
+								<span className="sr-only">Menú</span>
+							</Button>
+						</SheetTrigger>
+						<SheetContent
+							side="right"
+							className="w-full sm:w-80 bg-[#1E293B] border-white/10 p-0"
+						>
+							<div className="flex flex-col h-full">
+								<div className="p-4 border-b border-white/10 flex flex-col items-center">
+									<CustomLogo width="8" height="8" />
+								</div>
+								<div className="flex-1 overflow-y-auto py-4">
+									<nav className="flex flex-col gap-1 px-4">
 										<Link
 											to="/"
-											className={`rounded-full px-4 py-2.5 text-left text-sm font-medium transition-colors ${
+											onClick={() => setIsOpen(false)}
+											className={`rounded-full px-4 py-3 text-center text-sm font-medium transition-colors ${
 												category === undefined
 													? 'bg-white/15 text-white'
 													: 'text-white/70 hover:text-white hover:bg-white/5'
@@ -178,33 +178,89 @@ export const CustomHeader = () => {
 											Todos
 										</Link>
 										<Link
-											to="category/soluciones-ambientales"
-											className={`rounded-full px-4 py-2.5 text-left text-sm font-medium transition-colors ${
-												category === 'soluciones-ambientales'
+											to="/category/Soluciones%20Ambientales"
+											onClick={() => setIsOpen(false)}
+											className={`rounded-full px-4 py-3 text-center text-sm font-medium transition-colors ${
+												category === 'Soluciones Ambientales'
 													? 'bg-[#0D9668]/25 text-white'
 													: 'text-white/70 hover:text-white hover:bg-white/5'
 											}`}
 										>
 											Soluciones Ambientales
 										</Link>
-									</nav>
-
-									<div className="border-t border-white/10 pt-4 flex flex-col gap-2">
 										<Link
-											to="/auth"
-											className="justify-start text-white/80 hover:text-white hover:bg-white/10 rounded-full"
+											to="/category/Interiores"
+											onClick={() => setIsOpen(false)}
+											className={`rounded-full px-4 py-3 text-center text-sm font-medium transition-colors ${
+												category === 'Interiores'
+													? 'bg-[#0D9668]/25 text-white'
+													: 'text-white/70 hover:text-white hover:bg-white/5'
+											}`}
+										>
+											Interiores
+										</Link>
+										<Link
+											to="/category/Obra%20Gris"
+											onClick={() => setIsOpen(false)}
+											className={`rounded-full px-4 py-3 text-center text-sm font-medium transition-colors ${
+												category === 'Obra Gris'
+													? 'bg-[#0D9668]/25 text-white'
+													: 'text-white/70 hover:text-white hover:bg-white/5'
+											}`}
+										>
+											Obra Gris
+										</Link>
+									</nav>
+								</div>
+
+								<div className="p-4 border-t border-white/10 space-y-3">
+									{userisCustomer() && (
+										<Link
+											to="/cart"
+											onClick={() => setIsOpen(false)}
+											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-white hover:bg-white/5 transition-colors w-full"
+										>
+											<ShoppingCart className="h-5 w-5" />
+											Mi Carrito
+											<Badge className="h-5 w-5 rounded-full bg-[#0D9668] p-0 text-xs text-white flex items-center justify-center">
+												3
+											</Badge>
+										</Link>
+									)}
+
+									{authStatus === 'not-authenticated' ? (
+										<Link
+											to="/auth/login"
+											onClick={() => setIsOpen(false)}
+											className="flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium bg-[#6D28D9] hover:bg-[#5B21B6] text-white transition-colors w-full"
 										>
 											Iniciar sesión
 										</Link>
+									) : (
+										<button
+											onClick={() => {
+												logout()
+												setIsOpen(false)
+											}}
+											className="flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors w-full"
+										>
+											Cerrar sesión
+										</button>
+									)}
 
-										<Button className="justify-start bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
-											<Link to="/admin">Panel Admin</Link>
-										</Button>
-									</div>
+									{(userIsAdmin() || userIsEmployee()) && (
+										<Link
+											to="/admin"
+											onClick={() => setIsOpen(false)}
+											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#0D9668] hover:bg-[#0A7C56] text-white transition-colors w-full"
+										>
+											Panel Admin
+										</Link>
+									)}
 								</div>
-							</SheetContent>
-						</Sheet>
-					</div>
+							</div>
+						</SheetContent>
+					</Sheet>
 				</div>
 			</div>
 		</header>

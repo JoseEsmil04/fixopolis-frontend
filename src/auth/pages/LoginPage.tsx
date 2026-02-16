@@ -7,11 +7,11 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useNavigate } from 'react-router'
 import {
-	EyeIcon,
 	EyeOffIcon,
-	GithubIcon,
-	GoogleIcon
-} from '../components/AuthIcons'
+	EyeIcon,
+	GithubIcon
+} from 'lucide-react'
+import { GoogleIcon } from '../components/AuthIcons'
 import { toast } from 'sonner'
 import { useAuthStore } from '../store/auth.store'
 
@@ -43,45 +43,42 @@ export const LoginPage = () => {
 	return (
 		<main className="min-h-svh flex">
 			{/* Panel izquierdo - Solo visible en desktop */}
-			<div className="hidden lg:flex lg:w-1/2 bg-foreground text-background p-12 flex-col justify-between">
+			<div className="hidden lg:flex lg:w-1/2 bg-[#0f172a] text-white p-8 lg:p-12 flex-col justify-between">
 				<CustomLogo width="12" height="12" />
 
 				<blockquote className="space-y-4">
-					<p className="text-xl leading-relaxed text-balance">
-						"Esta plataforma ha transformado completamente la manera en que
-						gestionamos nuestro equipo. Simple, intuitiva y poderosa."
+					<p className="text-xl lg:text-2xl leading-relaxed text-balance">
+						"En Fixopolis encontré todos los materiales que necesitaba para mi
+						proyecto. Excelente atención y precios justos."
 					</p>
-					<footer className="text-sm text-background/70">
-						Sofia Martinez, CEO de TechFlow
+					<footer className="text-sm text-white/70">
+						Carlos Rodríguez, Constructor
 					</footer>
 				</blockquote>
 
-				<p className="text-sm text-background/50">
-					2026 Acme Inc. Todos los derechos reservados.
+				<p className="text-sm text-white/50">
+					2026 Fixopolis. Todos los derechos reservados.
 				</p>
 			</div>
 
 			{/* Panel derecho - Formulario */}
-			<div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
-				<div className="w-full max-w-sm">
+			<div className="flex-1 w-full flex items-center justify-center p-4 sm:p-8 lg:p-12 bg-background">
+				<div className="w-full max-w-md mx-auto flex flex-col">
 					{/* Logo móvil */}
-					<div className="flex items-center gap-3 mb-8 lg:hidden">
-						<div className="w-8 h-8 bg-foreground rounded-md" />
-						<span className="font-semibold text-lg text-foreground">
-							Acme Inc
-						</span>
+					<div className="flex justify-center mb-6 lg:hidden">
+						<CustomLogo width="10" height="10" />
 					</div>
 
-					<div className="mb-8">
+					<div className="mb-6 lg:mb-8 text-center">
 						<h1 className="text-2xl font-semibold tracking-tight text-foreground">
 							Bienvenido de nuevo
 						</h1>
-						<p className="text-muted-foreground mt-2">
+						<p className="text-muted-foreground mt-2 text-sm sm:text-base">
 							Ingresa tus credenciales para acceder a tu cuenta
 						</p>
 					</div>
 
-					<form onSubmit={(event) => handleLogin(event)} className="space-y-5">
+					<form onSubmit={(event) => handleLogin(event)} className="space-y-4 lg:space-y-5">
 						<div className="space-y-2">
 							<Label htmlFor="email">Email</Label>
 							<Input
@@ -91,7 +88,7 @@ export const LoginPage = () => {
 								placeholder="tu@email.com"
 								required
 								disabled={isLoading}
-								className="h-11"
+								className="w-full h-10 lg:h-11"
 							/>
 						</div>
 
@@ -113,7 +110,7 @@ export const LoginPage = () => {
 									placeholder="••••••••"
 									required
 									disabled={isLoading}
-									className="h-11 pr-10"
+									className="w-full h-10 lg:h-11 pr-10"
 								/>
 								<button
 									type="button"
@@ -132,22 +129,22 @@ export const LoginPage = () => {
 							</div>
 						</div>
 
-						<div className="flex items-center gap-2">
+						<div className="flex items-start gap-2">
 							<Checkbox id="remember" />
 							<Label
 								htmlFor="remember"
-								className="text-sm text-muted-foreground font-normal cursor-pointer"
+								className="text-sm text-muted-foreground font-normal cursor-pointer leading-tight"
 							>
 								Recordarme por 30 días
 							</Label>
 						</div>
 
-						<Button type="submit" disabled={isLoading} className="w-full h-11">
+						<Button type="submit" disabled={isLoading} className="w-full h-10 lg:h-11">
 							{isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
 						</Button>
 					</form>
 
-					<div className="relative my-6">
+					<div className="relative my-5 lg:my-6 w-full">
 						<div className="absolute inset-0 flex items-center">
 							<div className="w-full border-t border-border" />
 						</div>
@@ -158,18 +155,18 @@ export const LoginPage = () => {
 						</div>
 					</div>
 
-					<div className="flex gap-3">
-						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+					<div className="w-full flex gap-3">
+						<Button variant="outline" className="flex-1 h-10 lg:h-11 bg-transparent">
 							<GoogleIcon className="w-4 h-4" />
 							<span className="ml-2">Google</span>
 						</Button>
-						<Button variant="outline" className="flex-1 h-11 bg-transparent">
+						<Button variant="outline" className="flex-1 h-10 lg:h-11 bg-transparent">
 							<GithubIcon className="w-4 h-4" />
 							<span className="ml-2">GitHub</span>
 						</Button>
 					</div>
 
-					<p className="text-center text-sm text-muted-foreground mt-8">
+					<p className="text-center text-sm text-muted-foreground mt-6 lg:mt-8 w-full">
 						No tienes cuenta?{' '}
 						<Link
 							to="/auth/register"

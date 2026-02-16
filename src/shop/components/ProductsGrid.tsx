@@ -14,14 +14,14 @@ export const ProductsGrid = ({ products }: Props) => {
 	return (
 		<section>
 			<FilterToolbar />
-			<div className="container mx-auto px-4 py-8">
+			<div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
 				{/* Product grid */}
 				{products.length > 0 ? (
 					<div
 						className={
 							viewMode === 'grid'
-								? 'grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-								: 'flex flex-col gap-4'
+								? 'grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+								: 'flex flex-col gap-3 sm:gap-4'
 						}
 					>
 						{products.map((product) => (
@@ -33,12 +33,12 @@ export const ProductsGrid = ({ products }: Props) => {
 						))}
 					</div>
 				) : (
-					<div className="py-20 text-center rounded-xl border bg-slate-50">
-						<div className="text-4xl mb-3">🔍</div>
-						<p className="text-[#1E293B] font-medium">
+					<div className="py-12 sm:py-20 text-center rounded-xl border bg-slate-50 mx-3 sm:mx-0">
+						<div className="text-3xl sm:text-4xl mb-3">🔍</div>
+						<p className="text-[#1E293B] font-medium text-sm sm:text-base">
 							No se encontraron productos
 						</p>
-						<p className="text-sm text-muted-foreground mt-1">
+						<p className="text-xs sm:text-sm text-muted-foreground mt-1">
 							Intenta ajustar los filtros de búsqueda
 						</p>
 					</div>

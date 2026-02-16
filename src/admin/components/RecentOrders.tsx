@@ -49,22 +49,6 @@ const recentOrders: RecentOrder[] = [
 		status: 'processing',
 		date: 'Hace 12 horas',
 		icon: <Clock className="h-4 w-4 text-blue-600" />
-	},
-	{
-		id: '#ORD-005',
-		customer: 'Roberto Sánchez',
-		amount: '$95',
-		status: 'processing',
-		date: 'Hace 12 horas',
-		icon: <Clock className="h-4 w-4 text-blue-600" />
-	},
-	{
-		id: '#ORD-005',
-		customer: 'Roberto Sánchez',
-		amount: '$95',
-		status: 'processing',
-		date: 'Hace 12 horas',
-		icon: <Clock className="h-4 w-4 text-blue-600" />
 	}
 ]
 

@@ -39,8 +39,10 @@ export function FilterToolbar() {
 		return <CustomLoading />
 	}
 
+	const categoriesName = categories.map((category) => category.name)
+
 	const products = productsData.data
-	const allCategories = ['Todos', ...categories]
+	const allCategories = ['Todos', ...categoriesName]
 	const maxPrice =
 		products.length > 0 ? Math.max(...products.map((p) => p.price)) : 10000
 
@@ -135,7 +137,7 @@ export function FilterToolbar() {
 							<Input
 								type="search"
 								ref={searchInputRef}
-								placeholder="Buscar productos, SKU..."
+								placeholder="Buscar..."
 								defaultValue={query}
 								onKeyDown={(e) => {
 									if (e.key === 'Enter') {
@@ -237,12 +239,12 @@ export function FilterToolbar() {
 										Categorías
 									</AccordionTrigger>
 									<AccordionContent className="pb-4">
-										<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+										<div className="flex flex-wrap gap-2">
 											{allCategories.map((category) => (
 												<label
 													key={category}
 													className={cn(
-														'flex items-center gap-2 rounded-lg px-3 py-2.5 cursor-pointer transition-all text-sm',
+														'flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer transition-all text-sm whitespace-nowrap',
 														(
 															category === 'Todos'
 																? selectedCategory === null
@@ -263,7 +265,7 @@ export function FilterToolbar() {
 														}
 														className="data-[state=checked]:bg-[#6D28D9] data-[state=checked]:border-[#6D28D9]"
 													/>
-													<span className="truncate flex-1">{category}</span>
+													<span className="truncate">{category}</span>
 												</label>
 											))}
 										</div>

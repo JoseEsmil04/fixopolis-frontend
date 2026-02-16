@@ -17,16 +17,15 @@ import {
 	SelectItem
 } from '@/components/ui/select'
 import { Select } from '@/components/ui/select'
-
 import { getCategoriesNameAction } from '@/shop/actions/get-categories.action'
 import { cn } from '@/lib/utils'
 import { useNavigate, useParams } from 'react-router'
-
 interface Props {
 	product: Product
+	onSubmit: (productLike: Partial<Product>) => Promise<void>
+	isLoading?: boolean
 }
-
-export const ProductForm = ({ product }: Props) => {
+export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => {
 	const navigate = useNavigate()
 	const { id } = useParams()
 	const title = id === 'new' ? 'Nuevo Producto' : 'Editar Producto'
@@ -34,24 +33,27 @@ export const ProductForm = ({ product }: Props) => {
 		id === 'new'
 			? 'Completa la información para crear un nuevo producto'
 			: 'Modifica los datos del producto'
-
 	const {
 		register,
 		formState: { errors },
-		handleSubmit
+		handleSubmit,
+		setValue,
+		watch
 	} = useForm({
-		defaultValues: product
+		defaultValues: {
+			...product,
+			categoryId: product.categoryId || '',
+			isAvailable: product.isAvailable ?? true
+		}
 	})
+
+	const isAvailable = watch('isAvailable')
 	const { data: categories } = useQuery({
 		queryKey: ['categories'],
 		queryFn: () => getCategoriesNameAction(),
 		retry: false,
 		staleTime: 1000 * 5 * 60
 	})
-
-	const onSubmit = (productLike: Product) => {
-		console.log('Producto', productLike)
-	}
 	return (
 		<div className=" h-full flex flex-col overflow-hidden">
 			<div className="mb-6 flex flex-col">
@@ -82,90 +84,157 @@ export const ProductForm = ({ product }: Props) => {
 												})}
 												id="name"
 												{...register('name', {
-													required: true
+													required: 'El Nombre del Producto es requerido',
+													validate: (value) =>
+														value.trim().length > 0 ||
+														'El nombre no puede contener solo espacios'
 												})}
-												// onChange={handleInputChange}
 												placeholder='Ej: Cono Reflectivo 28"'
-												required
 											/>
 											{errors.name && (
 												<p className="text-red-500 text-sm">
-													El Nombre del Producto es requerido
+													{errors.name.message}
 												</p>
 											)}
 										</div>
 										<div className="flex flex-col gap-2">
 											<Label htmlFor="code">Código *</Label>
 											<Input
+												className={cn({
+													'border-red-500': errors.code
+												})}
 												id="code"
-												{...register('code')}
-												// onChange={handleInputChange}
+												{...register('code', {
+													required: 'El Código del Producto es requerido',
+													minLength: {
+														value: 6,
+														message: 'El código debe tener mínimo 6 caracteres'
+													},
+													validate: (value) =>
+														value.trim().length > 0 ||
+														'El código no puede contener solo espacios'
+												})}
 												placeholder="Ej: CON28R"
-												required
 											/>
+											{errors.code && (
+												<p className="text-red-500 text-sm">
+													{errors.code.message}
+												</p>
+											)}
 										</div>
 									</div>
-
 									{/* Categoria */}
 									<div className="flex flex-col gap-2">
-										<Label htmlFor="categoryName">Categoría</Label>
-										<Select defaultValue={product.categoryName}>
-											<SelectTrigger className="w-full">
-												<SelectValue />
+										<Label htmlFor="categoryId">Categoría *</Label>
+										<Select
+											value={watch('categoryId') || ''}
+											onValueChange={(value) =>
+												setValue('categoryId', value, {
+													shouldValidate: true
+												})
+											}
+										>
+											<SelectTrigger
+												className={cn({
+													'border-red-500': errors.categoryId
+												})}
+											>
+												<SelectValue placeholder="Selecciona una categoría" />
 											</SelectTrigger>
 											<SelectContent position="popper">
 												<SelectGroup>
-													<SelectLabel>Categorias</SelectLabel>
+													<SelectLabel>Categorías</SelectLabel>
 													{categories?.map((category) => (
-														<SelectItem value={category}>{category}</SelectItem>
+														<SelectItem value={category.id} key={category.id}>
+															{category.name}
+														</SelectItem>
 													))}
 												</SelectGroup>
 											</SelectContent>
 										</Select>
+										{/* Hidden input para categoryId */}
+										<input
+											type="hidden"
+											{...register('categoryId', {
+												required: 'La categoría es requerida'
+											})}
+										/>
+										{errors.categoryId && (
+											<p className="text-red-500 text-sm">
+												{errors.categoryId.message}
+											</p>
+										)}
 									</div>
-
 									{/* Descripcion */}
 									<div className="flex flex-col gap-2">
 										<Label htmlFor="description">Descripción</Label>
 										<Textarea
+											className={cn({
+												'border-red-500': errors.description
+											})}
 											id="description"
 											{...register('description')}
-											// onChange={handleInputChange}
 											placeholder="Describe el producto..."
 											rows={4}
 										/>
 									</div>
-
 									{/* Precio y Stock */}
 									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 										<div className="flex flex-col gap-2">
 											<Label htmlFor="price">Precio *</Label>
 											<Input
+												className={cn({
+													'border-red-500': errors.price
+												})}
 												id="price"
 												type="number"
 												step="0.01"
 												min="0"
-												{...register('price')}
-												// onChange={handleInputChange}
+												{...register('price', {
+													required: 'El Precio es requerido',
+													valueAsNumber: true,
+													validate: (value) =>
+														(value !== null &&
+															value !== undefined &&
+															value > 0) ||
+														'El precio debe ser mayor a 0'
+												})}
 												placeholder="0.00"
-												required
 											/>
+											{errors.price && (
+												<p className="text-red-500 text-sm">
+													{errors.price.message}
+												</p>
+											)}
 										</div>
 										<div className="flex flex-col gap-2">
 											<Label htmlFor="stock">Stock</Label>
 											<Input
+												className={cn({
+													'border-red-500': errors.stock
+												})}
 												id="stock"
 												type="number"
 												min="0"
-												{...register('stock')}
-												// onChange={handleInputChange}
+												{...register('stock', {
+													valueAsNumber: true,
+													validate: (value) =>
+														value === undefined ||
+														value === null ||
+														value >= 0 ||
+														'El stock no puede ser negativo'
+												})}
 												placeholder="0"
 											/>
+											{errors.stock && (
+												<p className="text-red-500 text-sm">
+													{errors.stock.message}
+												</p>
+											)}
 										</div>
 									</div>
 								</CardContent>
 							</Card>
-
 							{/* Disponibilidad */}
 							<Card>
 								<CardContent className="pt-6">
@@ -177,19 +246,15 @@ export const ProductForm = ({ product }: Props) => {
 											</p>
 										</div>
 										<Switch
-											checked={product.isAvailable}
-											// onCheckedChange={(checked) =>
-											// 	setFormData((prev) => ({
-											// 		...prev,
-											// 		isAvailable: checked
-											// 	}))
-											// }
+											checked={isAvailable}
+											onCheckedChange={(checked) =>
+												setValue('isAvailable', checked)
+											}
 										/>
 									</div>
 								</CardContent>
 							</Card>
 						</div>
-
 						{/* Right column - Image */}
 						<div className="flex flex-col gap-6">
 							<Card className="flex-1">
@@ -198,7 +263,7 @@ export const ProductForm = ({ product }: Props) => {
 								</CardHeader>
 								<CardContent className="flex flex-col gap-4">
 									{/* Image preview */}
-									<div className="relative h-full w-full overflow-hidden rounded-lg border bg-muted min-h-96">
+									<div className="relative h-full w-full overflow-hidden rounded-lg border bg-muted min-h-100">
 										{product.imageUrl ? (
 											<>
 												<img
@@ -211,7 +276,6 @@ export const ProductForm = ({ product }: Props) => {
 													variant="destructive"
 													size="sm"
 													className="absolute right-2 top-2 h-8 w-8 p-0"
-													// onClick={handleRemoveImage}
 												>
 													<X className="h-4 w-4" />
 													<span className="sr-only">Eliminar imagen</span>
@@ -224,25 +288,16 @@ export const ProductForm = ({ product }: Props) => {
 											</div>
 										)}
 									</div>
-
 									{/* Upload button */}
-									<input
-										// ref={fileInputRef}
-										type="file"
-										accept="image/*"
-										className="hidden"
-										// onChange={handleImageSelect}
-									/>
+									<input type="file" accept="image/*" className="hidden" />
 									<Button
 										type="button"
 										variant="outline"
 										className="w-full gap-2 bg-transparent"
-										// onClick={() => fileInputRef.current?.click()}
 									>
 										<Upload className="h-4 w-4" />
 										{product.imageUrl ? 'Cambiar imagen' : 'Subir imagen'}
 									</Button>
-
 									{/* URL manual */}
 									<div className="flex flex-col gap-2">
 										<Label
@@ -253,15 +308,7 @@ export const ProductForm = ({ product }: Props) => {
 										</Label>
 										<Input
 											id="imageUrl"
-											name="imageUrl"
-											value={product.imageUrl}
-											// onChange={(e) => {
-											// 	// handleInputChange(e)
-											// 	if (e.target.value) {
-											// 		setImagePreview(null)
-											// 		setImageFile(null)
-											// 	}
-											// }}
+											{...register('imageUrl')}
 											placeholder="https://..."
 										/>
 									</div>
@@ -269,18 +316,18 @@ export const ProductForm = ({ product }: Props) => {
 							</Card>
 						</div>
 					</div>
-
 					{/* Action buttons */}
 					<div className="flex items-center justify-end gap-3">
 						<Button
 							type="button"
 							variant="outline"
 							onClick={() => navigate('/admin/products')}
+							disabled={isLoading}
 						>
 							Cancelar
 						</Button>
-						<Button variant="secondaryColor" type="submit">
-							Guardar cambios
+						<Button variant="secondaryColor" type="submit" disabled={isLoading}>
+							{isLoading ? 'Guardando...' : 'Guardar cambios'}
 						</Button>
 					</div>
 				</form>

@@ -16,7 +16,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Suspense } from 'react'
 import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 
 const clientes = [
@@ -75,15 +74,15 @@ const clientes = [
 export const CustomerPage = () => {
 	return (
 		<AdminPageWrapper>
-			<div className="p-6 h-full flex flex-col overflow-hidden">
-				<div className=" mb-6 flex items-center justify-between">
+			<div className="h-full flex flex-col overflow-hidden">
+				<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 					<div>
-						<h2 className="text-2xl font-bold text-foreground">Clientes</h2>
-						<p className="text-muted-foreground">
+						<h2 className="text-xl lg:text-2xl font-bold text-foreground">Clientes</h2>
+						<p className="text-sm text-muted-foreground">
 							Gestiona la información de tus clientes
 						</p>
 					</div>
-					<Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+					<Button className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
 						Agregar Cliente
 					</Button>
 				</div>
@@ -91,11 +90,11 @@ export const CustomerPage = () => {
 				<div className="flex-1 overflow-hidden">
 					<Card className="h-full flex flex-col">
 						<CardHeader className="pb-4">
-							<div className="flex items-center justify-between">
+							<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 								<CardTitle className="text-lg font-semibold">
 									Lista de Clientes
 								</CardTitle>
-								<div className="relative w-72">
+								<div className="relative w-full sm:w-72">
 									<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 									<Input
 										placeholder="Buscar cliente..."
@@ -105,28 +104,16 @@ export const CustomerPage = () => {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<Suspense>
+							<div className="overflow-x-auto">
 								<Table>
 									<TableHeader>
 										<TableRow className="border-border hover:bg-transparent">
-											<TableHead className="text-muted-foreground">
-												Cliente
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Contacto
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Órdenes
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Total Facturado
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Deuda Pendiente
-											</TableHead>
-											<TableHead className="text-muted-foreground">
-												Estado
-											</TableHead>
+											<TableHead className="text-muted-foreground">Cliente</TableHead>
+											<TableHead className="text-muted-foreground hidden md:table-cell">Contacto</TableHead>
+											<TableHead className="text-muted-foreground hidden sm:table-cell">Órdenes</TableHead>
+											<TableHead className="text-muted-foreground hidden lg:table-cell">Total Facturado</TableHead>
+											<TableHead className="text-muted-foreground hidden lg:table-cell">Deuda Pendiente</TableHead>
+											<TableHead className="text-muted-foreground hidden sm:table-cell">Estado</TableHead>
 											<TableHead className="text-muted-foreground w-12"></TableHead>
 										</TableRow>
 									</TableHeader>
@@ -138,36 +125,36 @@ export const CustomerPage = () => {
 											>
 												<TableCell>
 													<div className="flex items-center gap-3">
-														<div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+														<div className="flex h-9 w-9 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs lg:text-sm">
 															{cliente.nombre
 																.split(' ')
 																.map((n) => n[0])
 																.join('')}
 														</div>
-														<span className="font-medium text-foreground">
+														<span className="font-medium text-foreground text-sm">
 															{cliente.nombre}
 														</span>
 													</div>
 												</TableCell>
-												<TableCell>
+												<TableCell className="hidden md:table-cell">
 													<div className="flex flex-col gap-1">
-														<div className="flex items-center gap-2 text-sm text-muted-foreground">
+														<div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
 															<Mail className="h-3.5 w-3.5" />
-															{cliente.email}
+															<span className="truncate max-w-[120px] lg:max-w-none">{cliente.email}</span>
 														</div>
-														<div className="flex items-center gap-2 text-sm text-muted-foreground">
+														<div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground hidden sm:table-cell">
 															<Phone className="h-3.5 w-3.5" />
 															{cliente.telefono}
 														</div>
 													</div>
 												</TableCell>
-												<TableCell className="text-foreground">
+												<TableCell className="text-foreground hidden sm:table-cell">
 													{cliente.ordenes}
 												</TableCell>
-												<TableCell className="font-medium text-foreground">
+												<TableCell className="font-medium text-foreground hidden lg:table-cell">
 													{cliente.totalFacturado}
 												</TableCell>
-												<TableCell className="font-medium">
+												<TableCell className="font-medium hidden lg:table-cell">
 													<span
 														className={
 															cliente.deudaPendiente === '$0.00'
@@ -178,9 +165,9 @@ export const CustomerPage = () => {
 														{cliente.deudaPendiente}
 													</span>
 												</TableCell>
-												<TableCell>
+												<TableCell className="hidden sm:table-cell">
 													<span
-														className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+														className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
 															cliente.estado === 'Activo'
 																? 'bg-secondary/20 text-secondary'
 																: 'bg-muted text-muted-foreground'
@@ -213,7 +200,7 @@ export const CustomerPage = () => {
 										))}
 									</TableBody>
 								</Table>
-							</Suspense>
+							</div>
 						</CardContent>
 					</Card>
 				</div>

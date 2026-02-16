@@ -18,8 +18,28 @@ export const CustomPagination = ({ totalPages }: Props) => {
 		setSearchParams(searchParams)
 	}
 
+	const maxVisiblePages = 5
+	const showEllipsis = totalPages > maxVisiblePages
+	const getVisiblePages = () => {
+		if (totalPages <= maxVisiblePages) {
+			return Array.from({ length: totalPages }, (_, i) => i + 1)
+		}
+		
+		if (page <= 3) {
+			return [1, 2, 3, 4, 5]
+		}
+		
+		if (page >= totalPages - 2) {
+			return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+		}
+		
+		return [page - 2, page - 1, page, page + 1, page + 2]
+	}
+
+	const visiblePages = getVisiblePages()
+
 	return (
-		<div className="flex items-center justify-center space-x-2">
+		<div className="flex items-center justify-center gap-1 sm:gap-2">
 			<Button
 				variant="outline"
 				size="sm"
@@ -27,19 +47,48 @@ export const CustomPagination = ({ totalPages }: Props) => {
 				onClick={() => handlePageChange(page - 1)}
 			>
 				<ChevronLeft className="h-4 w-4" />
-				Anteriores
+				<span className="hidden sm:inline">Anterior</span>
 			</Button>
 
-			{Array.from({ length: totalPages }).map((_, index) => (
+			{showEllipsis && page > 3 && (
+				<>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => handlePageChange(1)}
+						className="w-9 sm:w-10"
+					>
+						1
+					</Button>
+					<span className="px-1 text-muted-foreground hidden sm:inline">...</span>
+				</>
+			)}
+
+			{visiblePages.map((pageNum) => (
 				<Button
-					key={index}
-					variant={page === index + 1 ? 'secondaryColor' : 'outline'}
-					onClick={() => handlePageChange(index + 1)}
+					key={pageNum}
+					variant={page === pageNum ? 'secondaryColor' : 'outline'}
+					onClick={() => handlePageChange(pageNum)}
 					size="sm"
+					className="w-9 sm:w-10"
 				>
-					{index + 1}
+					{pageNum}
 				</Button>
 			))}
+
+			{showEllipsis && page < totalPages - 2 && (
+				<>
+					<span className="px-1 text-muted-foreground hidden sm:inline">...</span>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => handlePageChange(totalPages)}
+						className="w-9 sm:w-10"
+					>
+						{totalPages}
+					</Button>
+				</>
+			)}
 
 			<Button
 				variant="outline"
@@ -47,7 +96,7 @@ export const CustomPagination = ({ totalPages }: Props) => {
 				disabled={page === totalPages}
 				onClick={() => handlePageChange(page + 1)}
 			>
-				Siguientes
+				<span className="hidden sm:inline">Siguiente</span>
 				<ChevronRight className="h-4 w-4" />
 			</Button>
 		</div>
