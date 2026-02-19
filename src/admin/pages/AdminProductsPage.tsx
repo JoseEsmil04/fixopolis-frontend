@@ -26,6 +26,11 @@ import type { Product } from '@/shop/interfaces/product.interface'
 import { CustomLoading } from '@/components/custom/CustomLoading'
 import { Link } from 'react-router'
 
+const truncateDescription = (text: string, maxLength: number = 40) => {
+	if (!text || text.length <= maxLength) return text
+	return text.slice(0, maxLength) + '...'
+}
+
 export const AdminProductsPage = () => {
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -46,7 +51,9 @@ export const AdminProductsPage = () => {
 			<div className="h-full flex flex-col overflow-hidden">
 				<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 					<div>
-						<h1 className="text-xl lg:text-2xl font-bold text-foreground">Productos</h1>
+						<h1 className="text-xl lg:text-2xl font-bold text-foreground">
+							Productos
+						</h1>
 						<p className="text-sm text-muted-foreground">
 							Gestiona tu catálogo de productos
 						</p>
@@ -74,12 +81,24 @@ export const AdminProductsPage = () => {
 									<TableHeader>
 										<TableRow>
 											<TableHead className="w-16">Imagen</TableHead>
-											<TableHead className="whitespace-nowrap">Código</TableHead>
-											<TableHead className="whitespace-nowrap">Producto</TableHead>
-											<TableHead className="whitespace-nowrap hidden md:table-cell">Categoría</TableHead>
-											<TableHead className="text-right whitespace-nowrap">Precio</TableHead>
-											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">Stock</TableHead>
-											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">Estado</TableHead>
+											<TableHead className="whitespace-nowrap">
+												Código
+											</TableHead>
+											<TableHead className="whitespace-nowrap">
+												Producto
+											</TableHead>
+											<TableHead className="whitespace-nowrap hidden md:table-cell">
+												Categoría
+											</TableHead>
+											<TableHead className="text-right whitespace-nowrap">
+												Precio
+											</TableHead>
+											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">
+												Stock
+											</TableHead>
+											<TableHead className="text-center whitespace-nowrap hidden sm:table-cell">
+												Estado
+											</TableHead>
 											<TableHead className="w-20">Acciones</TableHead>
 										</TableRow>
 									</TableHeader>
@@ -109,9 +128,11 @@ export const AdminProductsPage = () => {
 												</TableCell>
 												<TableCell>
 													<div>
-														<div className="font-medium text-sm lg:text-base">{product.name}</div>
+														<div className="font-medium text-sm lg:text-base">
+															{product.name}
+														</div>
 														<div className="text-xs lg:text-sm text-muted-foreground line-clamp-1 hidden sm:table-cell">
-															{product.description}
+															{truncateDescription(product.description)}
 														</div>
 													</div>
 												</TableCell>
@@ -149,12 +170,15 @@ export const AdminProductsPage = () => {
 												</TableCell>
 												<TableCell>
 													<div className="flex gap-1">
-														<Link
-															to={`/admin/products/${product.id}`}
-															className="h-8 w-8 p-0"
-														>
-															<Pencil className="h-4 w-4" />
-															<span className="sr-only">Editar</span>
+														<Link to={`/admin/products/${product.id}`}>
+															<Button
+																variant="ghost"
+																size="sm"
+																className="h-8 w-8 p-0 hover:text-secondary"
+															>
+																<Pencil className="h-4 w-4" />
+																<span className="sr-only">Editar</span>
+															</Button>
 														</Link>
 														<Button
 															variant="ghost"

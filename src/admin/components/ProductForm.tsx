@@ -20,12 +20,17 @@ import { Select } from '@/components/ui/select'
 import { getCategoriesNameAction } from '@/shop/actions/get-categories.action'
 import { cn } from '@/lib/utils'
 import { useNavigate, useParams } from 'react-router'
+import { useState, useRef, type ChangeEvent } from 'react'
 interface Props {
 	product: Product
-	onSubmit: (productLike: Partial<Product>) => Promise<void>
+	onSubmit: (productLike: Partial<Product> & { image?: File }) => Promise<void>
 	isLoading?: boolean
 }
-export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => {
+export const ProductForm = ({
+	product,
+	onSubmit,
+	isLoading = false
+}: Props) => {
 	const navigate = useNavigate()
 	const { id } = useParams()
 	const title = id === 'new' ? 'Nuevo Producto' : 'Editar Producto'
@@ -48,12 +53,42 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 	})
 
 	const isAvailable = watch('isAvailable')
+	const watchedImageUrl = watch('imageUrl')
+	const [selectedImage, setSelectedImage] = useState<File | null>(null)
+	const [imagePreview, setImagePreview] = useState<string>('')
+	const [isRemovingCurrentImage, setIsRemovingCurrentImage] = useState(false)
+	const fileInputRef = useRef<HTMLInputElement>(null)
+
+	const imageToShow = imagePreview || (watchedImageUrl && !isRemovingCurrentImage ? watchedImageUrl : product.imageUrl)
 	const { data: categories } = useQuery({
 		queryKey: ['categories'],
 		queryFn: () => getCategoriesNameAction(),
 		retry: false,
 		staleTime: 1000 * 5 * 60
 	})
+
+	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files
+		if (files && files[0]) {
+			const file = files[0]
+			setSelectedImage(file)
+			const reader = new FileReader()
+			reader.onloadend = () => {
+				setImagePreview(reader.result as string)
+			}
+			reader.readAsDataURL(file)
+		}
+	}
+
+	const handleRemoveImage = () => {
+		setSelectedImage(null)
+		setImagePreview('')
+		setIsRemovingCurrentImage(true)
+		setValue('imageUrl', '')
+		if (fileInputRef.current) {
+			fileInputRef.current.value = ''
+		}
+	}
 	return (
 		<div className=" h-full flex flex-col overflow-hidden">
 			<div className="mb-6 flex flex-col">
@@ -64,9 +99,12 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 			<div className="flex-1 overflow-hidden">
 				<form
 					className="flex flex-col gap-6 h-full"
-					onSubmit={handleSubmit(onSubmit)}
+					onSubmit={handleSubmit((data) => {
+						const submitData = { ...data, image: selectedImage || undefined }
+						onSubmit(submitData)
+					})}
 				>
-					<div className="grid grid-cols-1 gap-6 lg:grid-cols-3 h-full">
+					<div className="grid grid-cols-1 gap-5 lg:grid-cols-3 h-full">
 						{/* Left column - Main info */}
 						<div className="flex flex-col gap-6 lg:col-span-2">
 							<Card className="flex-1">
@@ -135,7 +173,7 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 											}
 										>
 											<SelectTrigger
-												className={cn({
+												className={cn('w-full', {
 													'border-red-500': errors.categoryId
 												})}
 											>
@@ -264,10 +302,10 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 								<CardContent className="flex flex-col gap-4">
 									{/* Image preview */}
 									<div className="relative h-full w-full overflow-hidden rounded-lg border bg-muted min-h-100">
-										{product.imageUrl ? (
+										{imageToShow ? (
 											<>
 												<img
-													src={product.imageUrl}
+													src={imageToShow}
 													alt="Vista previa del producto"
 													className="h-full w-full object-cover"
 												/>
@@ -276,6 +314,7 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 													variant="destructive"
 													size="sm"
 													className="absolute right-2 top-2 h-8 w-8 p-0"
+													onClick={handleRemoveImage}
 												>
 													<X className="h-4 w-4" />
 													<span className="sr-only">Eliminar imagen</span>
@@ -289,14 +328,22 @@ export const ProductForm = ({ product, onSubmit, isLoading = false }: Props) => 
 										)}
 									</div>
 									{/* Upload button */}
-									<input type="file" accept="image/*" className="hidden" />
+									<input
+										ref={fileInputRef}
+										type="file"
+										accept="image/*"
+										className="hidden"
+										onChange={(e) => handleFileChange(e)}
+										id="image-upload"
+									/>
 									<Button
 										type="button"
 										variant="outline"
 										className="w-full gap-2 bg-transparent"
+										onClick={() => fileInputRef.current?.click()}
 									>
 										<Upload className="h-4 w-4" />
-										{product.imageUrl ? 'Cambiar imagen' : 'Subir imagen'}
+										{imageToShow ? 'Cambiar imagen' : 'Subir imagen'}
 									</Button>
 									{/* URL manual */}
 									<div className="flex flex-col gap-2">

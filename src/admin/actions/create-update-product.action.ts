@@ -2,7 +2,7 @@ import { fixopolisApi } from '@/api/fixopolis.api'
 import type { Product } from '@/shop/interfaces/product.interface'
 
 export const createUpdateProductAction = async (
-	productLike: Partial<Product> & { image?: File | File[] }
+	productLike: Partial<Product> & { image?: File }
 ): Promise<Product> => {
 	const { id, ...rest } = productLike
 	const isCreating = id === 'new'
@@ -15,7 +15,7 @@ export const createUpdateProductAction = async (
 
 	// Agrega campos (solo si existen)
 	if (rest.name != null) formData.append('name', String(rest.name))
-	if (rest.name != null) formData.append('code', String(rest.code))
+	if (rest.code != null) formData.append('code', String(rest.code))
 	if (rest.description != null)
 		formData.append('description', String(rest.description))
 	if (rest.categoryId != null)
@@ -26,18 +26,18 @@ export const createUpdateProductAction = async (
 		formData.append('isAvailable', String(rest.isAvailable))
 
 	// Imagen (1 o varias)
+	if (rest.image) {
+		formData.append('ImageFile', rest.image)
+	}
 
 	if (rest.imageUrl !== null) formData.append('imageUrl', String(rest.imageUrl))
 
-	//TODO: IMAGE FILE
-
-	const { data } = await fixopolisApi<Product>({
+	const response = await fixopolisApi.request<Product>({
 		url: isCreating ? '/products' : `/products/${id}`,
 		method: isCreating ? 'POST' : 'PUT',
 		data: formData,
-		// Si tu fixopolisApi usa axios, esto es opcional:
 		headers: { 'Content-Type': 'multipart/form-data' }
 	})
 
-	return data
+	return response.data
 }

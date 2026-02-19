@@ -9,23 +9,34 @@ import { toast } from 'sonner'
 export const AdminProductPage = () => {
 	const { id } = useParams()
 	const isNewProduct = id === 'new'
-	const { data: product, isLoading, isError, mutation } = useProduct(isNewProduct ? '' : id || '')
+	const {
+		data: product,
+		isLoading,
+		isError,
+		mutation
+	} = useProduct(isNewProduct ? '' : id || '')
 	const navigate = useNavigate()
 	const isPending = mutation.isPending
 
 	const handleSubmit = async (productLike: Partial<Product>) => {
 		try {
 			const productData = { ...productLike, id }
-			const updatedProduct = await mutation.mutateAsync(productData)
-			toast.success(`Producto ${updatedProduct.name} ${isNewProduct ? 'creado' : 'actualizado'} correctamente`, {
-				position: 'top-right'
-			})
+			await mutation.mutateAsync(productData)
+			toast.success(
+				`Producto ${isNewProduct ? 'creado' : 'actualizado'} correctamente`,
+				{
+					position: 'top-right'
+				}
+			)
 			navigate(`/admin/products`)
 		} catch (error) {
 			console.error(error)
-			toast.error(`Hubo un error al ${isNewProduct ? 'crear' : 'actualizar'} el producto`, {
-				position: 'top-right'
-			})
+			toast.error(
+				`Hubo un error al ${isNewProduct ? 'crear' : 'actualizar'} el producto`,
+				{
+					position: 'top-right'
+				}
+			)
 		}
 	}
 
@@ -48,7 +59,11 @@ export const AdminProductPage = () => {
 	return (
 		<AdminPageWrapper>
 			<div className="h-full flex flex-col overflow-hidden">
-				<ProductForm product={product || emptyProduct} onSubmit={handleSubmit} isLoading={isPending} />
+				<ProductForm
+					product={product || emptyProduct}
+					onSubmit={handleSubmit}
+					isLoading={isPending}
+				/>
 			</div>
 		</AdminPageWrapper>
 	)

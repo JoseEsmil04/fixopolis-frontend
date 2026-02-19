@@ -5,9 +5,9 @@ import type { Product } from '@/shop/interfaces/product.interface'
 
 export const useProduct = (id: string) => {
 	const queryClient = useQueryClient()
-	
+
 	const query = useQuery({
-		queryKey: ['product', { id }],
+		queryKey: ['products', { id }],
 		queryFn: () => getProductByIdAction(id),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
@@ -18,9 +18,12 @@ export const useProduct = (id: string) => {
 		mutationFn: createUpdateProductAction,
 		onSuccess: (product: Product) => {
 			// Actualizar el cache del producto individual
-			queryClient.setQueryData(['product', { id: product.id }], product)
-			// Invalidar la lista de productos para que se reflejen los cambios
 			queryClient.invalidateQueries({ queryKey: ['products'] })
+			queryClient.invalidateQueries({
+				queryKey: ['product', { id: product.id }]
+			})
+			queryClient.setQueryData(['products', { id: product.id }], product)
+			// Invalidar la lista de productos para que se reflejen los cambios
 		}
 	})
 
