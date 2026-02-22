@@ -1,6 +1,13 @@
 import { Link } from 'react-router'
 import { CustomLogo } from '../../components/custom/CustomLogo'
-import { Facebook, Instagram, Twitter, MapPin, Phone, Mail } from 'lucide-react'
+import {
+	Facebook,
+	Instagram,
+	MapPin,
+	Phone,
+	Mail,
+	Linkedin
+} from 'lucide-react'
 
 const categories = [
 	{ name: 'Todos los productos', slug: '/' },
@@ -23,12 +30,12 @@ interface Props {
 
 export const CustomFooter: React.FC<Props> = ({ slogan }) => {
 	return (
-		<footer className="border-t bg-[#1E293B] text-white mt-8">
+		<footer className=" border-t-white/10 border-t-2 bg-[#1E293B] text-white pt-6">
 			<div className="container mx-auto px-4 py-8 sm:py-12">
 				<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
 					{/* Brand */}
 					<div className="lg:col-span-1">
-						<CustomLogo />
+						<CustomLogo height="24" width="24" fontSize="5" />
 						<p className="mt-3 sm:mt-4 text-sm text-white/60 leading-relaxed">
 							{slogan}
 						</p>
@@ -36,21 +43,21 @@ export const CustomFooter: React.FC<Props> = ({ slogan }) => {
 						<div className="mt-4 flex items-center gap-2">
 							<a
 								href="#"
-								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#6D28D9] transition-colors"
+								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#0D9668] transition-colors"
 							>
 								<Facebook className="h-4 w-4" />
 							</a>
 							<a
 								href="#"
-								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#6D28D9] transition-colors"
+								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#0D9668] transition-colors"
 							>
 								<Instagram className="h-4 w-4" />
 							</a>
 							<a
 								href="#"
-								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#6D28D9] transition-colors"
+								className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-[#0D9668] transition-colors"
 							>
-								<Twitter className="h-4 w-4" />
+								<Linkedin className="h-4 w-4" />
 							</a>
 						</div>
 					</div>
@@ -112,7 +119,10 @@ export const CustomFooter: React.FC<Props> = ({ slogan }) => {
 			{/* Bottom */}
 			<div className="border-t border-white/10">
 				<div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-4 sm:py-5 text-center text-xs sm:text-sm text-white/50">
-					<p>© 2026 Fixopolis. Todos los derechos reservados.</p>
+					<p>
+						© {new Date().getFullYear()} Fixopolis. Todos los derechos
+						reservados.
+					</p>
 					<div className="flex items-center gap-4">
 						<span className="cursor-pointer hover:text-white transition-colors">
 							Privacidad

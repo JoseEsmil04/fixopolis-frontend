@@ -77,7 +77,9 @@ export const CustomerPage = () => {
 			<div className="h-full flex flex-col overflow-hidden">
 				<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 					<div>
-						<h2 className="text-xl lg:text-2xl font-bold text-foreground">Clientes</h2>
+						<h2 className="text-xl lg:text-2xl font-bold text-foreground">
+							Clientes
+						</h2>
 						<p className="text-sm text-muted-foreground">
 							Gestiona la información de tus clientes
 						</p>
@@ -108,12 +110,24 @@ export const CustomerPage = () => {
 								<Table>
 									<TableHeader>
 										<TableRow className="border-border hover:bg-transparent">
-											<TableHead className="text-muted-foreground">Cliente</TableHead>
-											<TableHead className="text-muted-foreground hidden md:table-cell">Contacto</TableHead>
-											<TableHead className="text-muted-foreground hidden sm:table-cell">Órdenes</TableHead>
-											<TableHead className="text-muted-foreground hidden lg:table-cell">Total Facturado</TableHead>
-											<TableHead className="text-muted-foreground hidden lg:table-cell">Deuda Pendiente</TableHead>
-											<TableHead className="text-muted-foreground hidden sm:table-cell">Estado</TableHead>
+											<TableHead className="text-muted-foreground">
+												Cliente
+											</TableHead>
+											<TableHead className="text-muted-foreground hidden md:table-cell">
+												Contacto
+											</TableHead>
+											<TableHead className="text-muted-foreground hidden sm:table-cell">
+												Órdenes
+											</TableHead>
+											<TableHead className="text-muted-foreground hidden lg:table-cell">
+												Total Facturado
+											</TableHead>
+											<TableHead className="text-muted-foreground hidden lg:table-cell">
+												Deuda Pendiente
+											</TableHead>
+											<TableHead className="text-muted-foreground hidden sm:table-cell">
+												Estado
+											</TableHead>
 											<TableHead className="text-muted-foreground w-12"></TableHead>
 										</TableRow>
 									</TableHeader>
@@ -140,9 +154,11 @@ export const CustomerPage = () => {
 													<div className="flex flex-col gap-1">
 														<div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
 															<Mail className="h-3.5 w-3.5" />
-															<span className="truncate max-w-[120px] lg:max-w-none">{cliente.email}</span>
+															<span className="truncate max-w-30 lg:max-w-none">
+																{cliente.email}
+															</span>
 														</div>
-														<div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground hidden sm:table-cell">
+														<div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground sm:table-cell">
 															<Phone className="h-3.5 w-3.5" />
 															{cliente.telefono}
 														</div>

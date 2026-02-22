@@ -9,8 +9,18 @@ import {
 	ChevronLeft
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
-import { Bolt } from 'lucide-react'
 import { useAuthStore } from '@/auth/store/auth.store'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 
 const navItems = [
 	{ icon: LayoutDashboard, label: 'Dashboard', to: '/admin' },
@@ -29,7 +39,7 @@ interface Props {
 export function AdminSidebar({ isCollapsed, onToggle }: Props) {
 	const { pathname } = useLocation()
 
-	const { user } = useAuthStore()
+	const { user, logout } = useAuthStore()
 
 	return (
 		<aside
@@ -41,13 +51,14 @@ export function AdminSidebar({ isCollapsed, onToggle }: Props) {
 		>
 			<div className="flex h-full flex-col">
 				{/* Logo */}
-				<div className="flex h-16 items-center justify-between border-b border-border px-4">
-					<Link to="/" className="flex items-center gap-3">
-						<div className="flex h-9 w-9 items-center justify-center">
-							<Bolt className="h-7 w-7 text-[#6D28D9]" />
-						</div>
-						{!isCollapsed && (
-							<span className="text-lg font-extrabold font-gantari tracking-tight text-[#6D28D9]">
+				<div className="flex h-16 items-center justify-between border-b border-border px-2">
+					<Link to="/" className="flex-1 flex justify-center">
+						{isCollapsed ? (
+							<span className="text-2xl font-bold text-primary hover:text-[#0D9668] hover:opacity-80">
+								F
+							</span>
+						) : (
+							<span className="text-2xl font-bold text-primary hover:text-[#0D9668] hover:opacity-80">
 								Fixopolis
 							</span>
 						)}
@@ -59,7 +70,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: Props) {
 					>
 						<ChevronLeft
 							className={cn(
-								'h-6 w-6 transition-transform',
+								'h-5 w-5 transition-transform',
 								isCollapsed && 'rotate-180'
 							)}
 						/>
@@ -113,12 +124,41 @@ export function AdminSidebar({ isCollapsed, onToggle }: Props) {
 							</div>
 						)}
 						{!isCollapsed && (
-							<button
-								type="button"
-								className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-							>
-								<LogOut className="h-4 w-4" />
-							</button>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<button
+										type="button"
+										className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+									>
+										<LogOut className="h-4 w-4" />
+									</button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											Confirmar cierre de sesión
+										</AlertDialogTitle>
+
+										<AlertDialogDescription>
+											Estás a punto de cerrar tu sesión actual. Deberás iniciar
+											sesión nuevamente para acceder a tu cuenta.
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+
+									<AlertDialogFooter>
+										<AlertDialogCancel variant="outline">
+											Permanecer en la sesión
+										</AlertDialogCancel>
+
+										<AlertDialogAction
+											variant="secondaryColor"
+											onClick={() => logout()}
+										>
+											Cerrar sesión
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
 						)}
 					</div>
 				</div>

@@ -25,6 +25,9 @@ import { useProducts } from '@/shop/hooks/useProducts'
 import type { Product } from '@/shop/interfaces/product.interface'
 import { CustomLoading } from '@/components/custom/CustomLoading'
 import { Link } from 'react-router'
+import { deleteProductAction } from '../actions/delete-product.action'
+import { toast } from 'sonner'
+import { useQueryClient } from '@tanstack/react-query'
 
 const truncateDescription = (text: string, maxLength: number = 40) => {
 	if (!text || text.length <= maxLength) return text
@@ -36,6 +39,7 @@ export const AdminProductsPage = () => {
 	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 	const { data, isLoading } = useProducts()
 	const products = data?.data
+	const queryClient = useQueryClient()
 
 	if (isLoading || !products) {
 		return <CustomLoading />
@@ -44,6 +48,19 @@ export const AdminProductsPage = () => {
 	const openDeleteDialog = (product: Product) => {
 		setSelectedProduct(product)
 		setIsDeleteDialogOpen(true)
+	}
+
+	const handleDeleteProduct = async (id: string) => {
+		try {
+			await deleteProductAction(id)
+			setIsDeleteDialogOpen(false)
+			setSelectedProduct(null)
+			queryClient.invalidateQueries({ queryKey: ['products'] })
+			toast.success('Producto eliminado correctamente')
+		} catch (error) {
+			toast.error('Error al eliminar el producto')
+			console.error(error)
+		}
 	}
 
 	return (
@@ -263,7 +280,12 @@ export const AdminProductsPage = () => {
 						>
 							Cancelar
 						</Button>
-						<Button variant="destructive">Eliminar</Button>
+						<Button
+							variant="destructive"
+							onClick={() => handleDeleteProduct(selectedProduct!.id)}
+						>
+							Eliminar
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>

@@ -24,22 +24,28 @@ export const CustomPagination = ({ totalPages }: Props) => {
 		if (totalPages <= maxVisiblePages) {
 			return Array.from({ length: totalPages }, (_, i) => i + 1)
 		}
-		
+
 		if (page <= 3) {
 			return [1, 2, 3, 4, 5]
 		}
-		
+
 		if (page >= totalPages - 2) {
-			return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+			return [
+				totalPages - 4,
+				totalPages - 3,
+				totalPages - 2,
+				totalPages - 1,
+				totalPages
+			]
 		}
-		
+
 		return [page - 2, page - 1, page, page + 1, page + 2]
 	}
 
 	const visiblePages = getVisiblePages()
 
 	return (
-		<div className="flex items-center justify-center gap-1 sm:gap-2">
+		<div className="flex items-center justify-center gap-1 sm:gap-2 mb-4">
 			<Button
 				variant="outline"
 				size="sm"
@@ -60,7 +66,9 @@ export const CustomPagination = ({ totalPages }: Props) => {
 					>
 						1
 					</Button>
-					<span className="px-1 text-muted-foreground hidden sm:inline">...</span>
+					<span className="px-1 text-muted-foreground hidden sm:inline">
+						...
+					</span>
 				</>
 			)}
 
@@ -78,7 +86,9 @@ export const CustomPagination = ({ totalPages }: Props) => {
 
 			{showEllipsis && page < totalPages - 2 && (
 				<>
-					<span className="px-1 text-muted-foreground hidden sm:inline">...</span>
+					<span className="px-1 text-muted-foreground hidden sm:inline">
+						...
+					</span>
 					<Button
 						variant="outline"
 						size="sm"

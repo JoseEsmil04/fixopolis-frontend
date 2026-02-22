@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { ShoppingCart, Menu } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useParams } from 'react-router'
 import { useAuthStore } from '@/auth/store/auth.store'
+import { useCartStore } from '@/customer/store/cart.store'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -23,13 +23,15 @@ export const CustomHeader = () => {
 	const { categorySlug: category } = useParams()
 	const { authStatus, userIsAdmin, userIsEmployee, userisCustomer, logout } =
 		useAuthStore()
+	const getTotalItems = useCartStore((state) => state.getTotalItems)
+	const totalItems = getTotalItems()
 
 	return (
 		<header className="sticky top-0 z-50 w-full bg-[#1E293B] shadow-lg">
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between gap-4">
 					{/* Logo */}
-					<CustomLogo />
+					<CustomLogo height="20" width="20" fontSize="4" />
 
 					{/* Desktop Nav */}
 					<nav className="hidden lg:flex items-center gap-1">
@@ -99,22 +101,25 @@ export const CustomHeader = () => {
 								<AlertDialogContent>
 									<AlertDialogHeader>
 										<AlertDialogTitle>
-											Estas seguro de que quieres cerrar sesión?
+											Confirmar cierre de sesión
 										</AlertDialogTitle>
+
 										<AlertDialogDescription>
-											This action cannot be undone. This will permanently delete
-											your account from our servers.
+											Estás a punto de cerrar tu sesión actual. Deberás iniciar
+											sesión nuevamente para acceder a tu cuenta.
 										</AlertDialogDescription>
 									</AlertDialogHeader>
+
 									<AlertDialogFooter>
-										<AlertDialogCancel variant="destructive">
-											Cancelar
+										<AlertDialogCancel variant="outline">
+											Permanecer en la sesión
 										</AlertDialogCancel>
+
 										<AlertDialogAction
 											variant="secondaryColor"
 											onClick={() => logout()}
 										>
-											Si, Cerrar sesión
+											Cerrar sesión
 										</AlertDialogAction>
 									</AlertDialogFooter>
 								</AlertDialogContent>
@@ -130,17 +135,16 @@ export const CustomHeader = () => {
 						)}
 
 						{userisCustomer() && (
-							<Button
-								variant="ghost"
-								size="icon"
-								className="relative text-white hover:bg-white/10 rounded-full"
-							>
-								<ShoppingCart className="h-5 w-5" />
-								<Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-[#0D9668] p-0 text-xs text-white flex items-center justify-center border-2 border-[#1E293B]">
-									3
-								</Badge>
-								<span className="sr-only">Carrito</span>
-							</Button>
+							<Link to="/customer/my-orders">
+								<Button className="bg-[#0D9668] hover:bg-[#0A7C56] text-white rounded-full relative">
+									Mi Panel
+									{totalItems > 0 && (
+										<span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-[#6D28D9] text-xs text-white flex items-center justify-center">
+											{totalItems}
+										</span>
+									)}
+								</Button>
+							</Link>
 						)}
 					</div>
 
@@ -162,7 +166,7 @@ export const CustomHeader = () => {
 						>
 							<div className="flex flex-col h-full">
 								<div className="p-4 border-b border-white/10 flex flex-col items-center">
-									<CustomLogo width="8" height="8" />
+									<CustomLogo width="16" height="16" fontSize="3" />
 								</div>
 								<div className="flex-1 overflow-y-auto py-4">
 									<nav className="flex flex-col gap-1 px-4">
@@ -216,15 +220,11 @@ export const CustomHeader = () => {
 								<div className="p-4 border-t border-white/10 space-y-3">
 									{userisCustomer() && (
 										<Link
-											to="/cart"
+											to="/customer/my-orders"
 											onClick={() => setIsOpen(false)}
-											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-white hover:bg-white/5 transition-colors w-full"
+											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#0D9668] hover:bg-[#0A7C56] text-white transition-colors w-full"
 										>
-											<ShoppingCart className="h-5 w-5" />
-											Mi Carrito
-											<Badge className="h-5 w-5 rounded-full bg-[#0D9668] p-0 text-xs text-white flex items-center justify-center">
-												3
-											</Badge>
+											Mi Panel
 										</Link>
 									)}
 

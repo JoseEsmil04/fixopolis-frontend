@@ -6,11 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useNavigate } from 'react-router'
-import {
-	EyeOffIcon,
-	EyeIcon,
-	GithubIcon
-} from 'lucide-react'
+import { EyeOffIcon, EyeIcon, GithubIcon } from 'lucide-react'
 import { GoogleIcon } from '../components/AuthIcons'
 import { toast } from 'sonner'
 import { useAuthStore } from '../store/auth.store'
@@ -41,12 +37,12 @@ export const LoginPage = () => {
 	}
 
 	return (
-		<main className="min-h-svh flex">
+		<>
 			{/* Panel izquierdo - Solo visible en desktop */}
 			<div className="hidden lg:flex lg:w-1/2 bg-[#0f172a] text-white p-8 lg:p-12 flex-col justify-between">
-				<CustomLogo width="12" height="12" />
+				<CustomLogo width="40" height="40" fontSize="7" />
 
-				<blockquote className="space-y-4">
+				<blockquote className="space-y-3">
 					<p className="text-xl lg:text-2xl leading-relaxed text-balance">
 						"En Fixopolis encontré todos los materiales que necesitaba para mi
 						proyecto. Excelente atención y precios justos."
@@ -62,11 +58,11 @@ export const LoginPage = () => {
 			</div>
 
 			{/* Panel derecho - Formulario */}
-			<div className="flex-1 w-full flex items-center justify-center p-4 sm:p-8 lg:p-12 bg-background">
-				<div className="w-full max-w-md mx-auto flex flex-col">
+			<div className="flex-1 w-full flex items-center justify-center p-4 sm:p-8 lg:p-12 bg-background overflow-y-auto">
+				<div className="w-full max-w-md mx-auto flex flex-col py-8">
 					{/* Logo móvil */}
 					<div className="flex justify-center mb-6 lg:hidden">
-						<CustomLogo width="10" height="10" />
+						<CustomLogo width="20" height="20" fontSize="5" />
 					</div>
 
 					<div className="mb-6 lg:mb-8 text-center">
@@ -78,7 +74,10 @@ export const LoginPage = () => {
 						</p>
 					</div>
 
-					<form onSubmit={(event) => handleLogin(event)} className="space-y-4 lg:space-y-5">
+					<form
+						onSubmit={(event) => handleLogin(event)}
+						className="space-y-4 lg:space-y-5"
+					>
 						<div className="space-y-2">
 							<Label htmlFor="email">Email</Label>
 							<Input
@@ -139,7 +138,11 @@ export const LoginPage = () => {
 							</Label>
 						</div>
 
-						<Button type="submit" disabled={isLoading} className="w-full h-10 lg:h-11">
+						<Button
+							type="submit"
+							disabled={isLoading}
+							className="w-full h-10 lg:h-11"
+						>
 							{isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
 						</Button>
 					</form>
@@ -156,11 +159,17 @@ export const LoginPage = () => {
 					</div>
 
 					<div className="w-full flex gap-3">
-						<Button variant="outline" className="flex-1 h-10 lg:h-11 bg-transparent">
+						<Button
+							variant="outline"
+							className="flex-1 h-10 lg:h-11 bg-transparent"
+						>
 							<GoogleIcon className="w-4 h-4" />
 							<span className="ml-2">Google</span>
 						</Button>
-						<Button variant="outline" className="flex-1 h-10 lg:h-11 bg-transparent">
+						<Button
+							variant="outline"
+							className="flex-1 h-10 lg:h-11 bg-transparent"
+						>
 							<GithubIcon className="w-4 h-4" />
 							<span className="ml-2">GitHub</span>
 						</Button>
@@ -177,6 +186,6 @@ export const LoginPage = () => {
 					</p>
 				</div>
 			</div>
-		</main>
+		</>
 	)
 }

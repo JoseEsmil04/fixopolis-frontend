@@ -4,10 +4,16 @@ import { StatsCards } from '@/admin/components/StatsCards'
 import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
 import { useAuthStore } from '@/auth/store/auth.store'
 import { useNavigate } from 'react-router'
+import { useOrder } from '../hooks/useOrder'
+import { CustomLoading } from '@/components/custom/CustomLoading'
 
 export const DashboardPage = () => {
 	const { user, userIsAdmin } = useAuthStore()
 	const navigate = useNavigate()
+	const { data, isLoading } = useOrder()
+
+	if (!data || isLoading) return <CustomLoading />
+	const recentOrders = data!.slice(0, 6)
 
 	if (!userIsAdmin()) {
 		navigate('/')
@@ -34,7 +40,7 @@ export const DashboardPage = () => {
 						<ServicesChart />
 					</div>
 					<div className="">
-						<RecentOrders />
+						<RecentOrders orders={recentOrders} />
 					</div>
 				</div>
 			</div>

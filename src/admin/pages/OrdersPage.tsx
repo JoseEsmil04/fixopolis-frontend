@@ -15,7 +15,8 @@ import {
 	Clock,
 	CheckCircle,
 	XCircle,
-	X
+	X,
+	CreditCard
 } from 'lucide-react'
 import {
 	DropdownMenu,
@@ -24,11 +25,7 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { AdminPageWrapper } from '@/admin/components/AdminPageWrapper'
-import { useQuery } from '@tanstack/react-query'
-import { getOrdersAction } from '../actions/get-orders.action'
 import { CustomLoading } from '@/components/custom/CustomLoading'
-import { useState } from 'react'
-import type { GetOrdersResponse } from '../interfaces/get-orders.response'
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -36,46 +33,18 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle
 } from '@/components/ui/alert-dialog'
-
-const getStatusConfig = (status: string) => {
-	switch (status) {
-		case 'Completed':
-			return {
-				icon: CheckCircle,
-				className: 'bg-secondary/15 text-secondary'
-			}
-		case 'In Progress':
-			return {
-				icon: Clock,
-				className: 'bg-primary/15 text-primary'
-			}
-		case 'Pending':
-			return {
-				icon: Package,
-				className: 'bg-amber-500/15 text-amber-600'
-			}
-		case 'Cancelled':
-			return {
-				icon: XCircle,
-				className: 'bg-destructive/15 text-destructive'
-			}
-		default:
-			return {
-				icon: Package,
-				className: 'bg-muted text-muted-foreground'
-			}
-	}
-}
+import { useOrder } from '../hooks/useOrder'
+import { getStatusConfig } from '@/lib/getStatusConfig'
 
 export const OrderPage = () => {
-	const { data, isLoading } = useQuery<GetOrdersResponse[]>({
-		queryKey: ['orders'],
-		queryFn: () => getOrdersAction()
-	})
-
-	const [selectedOrder, setSelectedOrder] = useState<GetOrdersResponse | null>(
-		null
-	)
+	const {
+		data,
+		isLoading,
+		selectedOrder,
+		setSelectedOrder,
+		cancelMutation,
+		payMutation
+	} = useOrder()
 
 	if (isLoading) return <CustomLoading item="Ordenes" />
 
@@ -87,7 +56,9 @@ export const OrderPage = () => {
 				<div className="h-full flex flex-col overflow-hidden">
 					<div className="mb-4 lg:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div>
-							<h2 className="text-xl lg:text-2xl font-bold text-foreground">Órdenes</h2>
+							<h2 className="text-xl lg:text-2xl font-bold text-foreground">
+								Órdenes
+							</h2>
 							<p className="text-sm text-muted-foreground">
 								Administra y rastrea todas las órdenes
 							</p>
@@ -103,8 +74,12 @@ export const OrderPage = () => {
 							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-xs lg:text-sm text-muted-foreground">Total Órdenes</p>
-										<p className="text-xl lg:text-2xl font-bold text-foreground">{orders.length}</p>
+										<p className="text-xs lg:text-sm text-muted-foreground">
+											Total Órdenes
+										</p>
+										<p className="text-xl lg:text-2xl font-bold text-foreground">
+											{orders.length}
+										</p>
 									</div>
 									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-primary/10">
 										<Package className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
@@ -116,9 +91,11 @@ export const OrderPage = () => {
 							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-xs lg:text-sm text-muted-foreground">En Proceso</p>
+										<p className="text-xs lg:text-sm text-muted-foreground">
+											En Proceso
+										</p>
 										<p className="text-xl lg:text-2xl font-bold text-foreground">
-											{orders.filter((o) => o.status === 'In Progress').length}
+											{orders.filter((o) => o.status === 'Pending').length}
 										</p>
 									</div>
 									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -131,9 +108,11 @@ export const OrderPage = () => {
 							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-xs lg:text-sm text-muted-foreground">Completadas</p>
+										<p className="text-xs lg:text-sm text-muted-foreground">
+											Completadas
+										</p>
 										<p className="text-xl lg:text-2xl font-bold text-foreground">
-											{orders.filter((o) => o.status === 'Completed').length}
+											{orders.filter((o) => o.status === 'Paid').length}
 										</p>
 									</div>
 									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-secondary/10">
@@ -146,13 +125,20 @@ export const OrderPage = () => {
 							<CardContent className="p-3 lg:p-4">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-xs lg:text-sm text-muted-foreground">Ingresos</p>
+										<p className="text-xs lg:text-sm text-muted-foreground">
+											Ingresos
+										</p>
 										<p className="text-lg lg:text-2xl font-bold text-foreground">
-											${orders.reduce((sum, o) => sum + o.total, 0).toLocaleString('en-US')}
+											$
+											{orders
+												.reduce((sum, o) => sum + o.total, 0)
+												.toLocaleString('en-US')}
 										</p>
 									</div>
 									<div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg bg-secondary/10">
-										<span className="text-sm lg:text-lg font-bold text-secondary">$</span>
+										<span className="text-sm lg:text-lg font-bold text-secondary">
+											$
+										</span>
 									</div>
 								</div>
 							</CardContent>
@@ -163,7 +149,9 @@ export const OrderPage = () => {
 						<Card className="h-full flex flex-col">
 							<CardHeader className="pb-4 shrink-0">
 								<div className="flex items-center justify-between">
-									<CardTitle className="text-lg font-semibold">Órdenes</CardTitle>
+									<CardTitle className="text-lg font-semibold">
+										Órdenes
+									</CardTitle>
 								</div>
 							</CardHeader>
 							<CardContent className="flex-1 overflow-hidden">
@@ -171,10 +159,18 @@ export const OrderPage = () => {
 									<Table>
 										<TableHeader>
 											<TableRow className="border-border hover:bg-transparent">
-												<TableHead className="text-muted-foreground">ID</TableHead>
-												<TableHead className="text-muted-foreground">Cliente</TableHead>
-												<TableHead className="text-muted-foreground">Total</TableHead>
-												<TableHead className="text-muted-foreground">Estado</TableHead>
+												<TableHead className="text-muted-foreground">
+													ID
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Cliente
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Total
+												</TableHead>
+												<TableHead className="text-muted-foreground">
+													Estado
+												</TableHead>
 												<TableHead className="text-muted-foreground w-12"></TableHead>
 											</TableRow>
 										</TableHeader>
@@ -198,10 +194,14 @@ export const OrderPage = () => {
 															className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getStatusConfig(order.status).className}`}
 														>
 															{(() => {
-																const StatusIcon = getStatusConfig(order.status).icon
+																const StatusIcon = getStatusConfig(
+																	order.status
+																).icon
 																return <StatusIcon className="h-3 w-3" />
 															})()}
-															<span className="hidden sm:inline">{order.status}</span>
+															<span className="hidden sm:inline">
+																{order.status}
+															</span>
 														</span>
 													</TableCell>
 													<TableCell>
@@ -216,12 +216,38 @@ export const OrderPage = () => {
 																</Button>
 															</DropdownMenuTrigger>
 															<DropdownMenuContent align="end">
-																<DropdownMenuItem onClick={() => setSelectedOrder(order)}>
+																<DropdownMenuItem
+																	onClick={() => setSelectedOrder(order)}
+																>
 																	<Eye className="mr-2 h-4 w-4" />
 																	Ver detalles
 																</DropdownMenuItem>
-																<DropdownMenuItem>Editar estado</DropdownMenuItem>
-																<DropdownMenuItem className="text-destructive">Cancelar orden</DropdownMenuItem>
+																{order.status === 'Pending' && (
+																	<DropdownMenuItem
+																		onClick={() => payMutation.mutate(order.id)}
+																		disabled={payMutation.isPending}
+																	>
+																		<CreditCard className="mr-2 h-4 w-4" />
+																		{payMutation.isPending
+																			? 'Procesando...'
+																			: 'Marcar como pagada'}
+																	</DropdownMenuItem>
+																)}
+																{order.status !== 'Cancelled' &&
+																	order.status !== 'Completed' && (
+																		<DropdownMenuItem
+																			onClick={() =>
+																				cancelMutation.mutate(order.id)
+																			}
+																			disabled={cancelMutation.isPending}
+																			className="text-destructive"
+																		>
+																			<XCircle className="mr-2 h-4 w-4" />
+																			{cancelMutation.isPending
+																				? 'Cancelando...'
+																				: 'Cancelar orden'}
+																		</DropdownMenuItem>
+																	)}
 															</DropdownMenuContent>
 														</DropdownMenu>
 													</TableCell>

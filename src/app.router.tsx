@@ -9,15 +9,21 @@ import { CategoryPage } from './shop/pages/CategoryPage'
 import { AdminLayout } from './admin/layouts/AdminLayout'
 import { DashboardPage } from './admin/pages/DashboardPage'
 import { CustomerPage } from './admin/pages/CustomerPage'
-import { OrderPage } from './admin/pages/OrderPage'
+import { OrderPage } from './admin/pages/OrdersPage'
 import { AdminProductsPage } from './admin/pages/AdminProductsPage'
 import { SettingsPage } from './admin/pages/SettingsPage'
 import { RegisterPage } from './auth/pages/RegisterPage'
 import {
 	AdminOrEmployeeRoute,
+	CustomerRoute,
 	NotAuthenticatedRoute
 } from './auth/components/ProtectedRoutes'
 import { AdminProductPage } from './admin/pages/AdminProductPage'
+import { CustomerLayout } from './customer/layouts/CustomerLayout'
+import { MyOrdersPage } from './customer/pages/MyOrdersPage'
+import { CartPage } from './customer/pages/CartPage'
+import { CustomerProfilePage } from './customer/pages/CustomerProfilePage'
+import { CustomerSettingsPage } from './customer/pages/CustomerSettingsPage'
 
 export const appRouter = createBrowserRouter([
 	{
@@ -29,12 +35,38 @@ export const appRouter = createBrowserRouter([
 				element: <HomePage />
 			},
 			{
-				path: 'product/:idSlug',
+				path: 'products/:id',
 				element: <ProductPage />
 			},
 			{
 				path: 'category/:categorySlug',
 				element: <CategoryPage />
+			}
+		]
+	},
+	{
+		path: '/customer',
+		element: (
+			<CustomerRoute>
+				<CustomerLayout />
+			</CustomerRoute>
+		),
+		children: [
+			{
+				path: 'cart',
+				element: <CartPage />
+			},
+			{
+				path: 'my-orders',
+				element: <MyOrdersPage />
+			},
+			{
+				path: 'profile',
+				element: <CustomerProfilePage />
+			},
+			{
+				path: 'settings',
+				element: <CustomerSettingsPage />
 			}
 		]
 	},
