@@ -11,7 +11,7 @@ const heightClasses: Record<string, string> = {
 	'18': 'h-18',
 	'20': 'h-20',
 	'24': 'h-24',
-	'40': 'h-40'
+	'32': 'h-32'
 }
 
 const widthClasses: Record<string, string> = {
@@ -23,7 +23,7 @@ const widthClasses: Record<string, string> = {
 	'18': 'w-18',
 	'20': 'w-20',
 	'24': 'w-24',
-	'40': 'w-40'
+	'32': 'w-32'
 }
 
 const fontSizeClasses: Record<string, string> = {
@@ -52,7 +52,7 @@ export const CustomLogo = ({
 		<Link
 			to="/"
 			className={cn(
-				'flex items-center hover:opacity-80 transition-opacity',
+				'flex items-center hover:opacity-80 transition-opacity gap-3',
 				className
 			)}
 		>

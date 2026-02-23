@@ -13,7 +13,7 @@ import { Trash2, Minus, Plus, ShoppingBag, Loader2 } from 'lucide-react'
 import { useCartStore } from '@/customer/store/cart.store'
 import { useAuthStore } from '@/auth/store/auth.store'
 import { createOrderAction } from '@/customer/actions/create-order.action'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -48,10 +48,26 @@ export const CartPage = () => {
 
 			await createOrderAction(user.id, orderItems)
 			clearCart()
-			toast.success('Orden creada exitosamente')
+			sileo.success({
+				title: 'Orden creada',
+				description: 'Tu orden ha sido creada exitosamente',
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 			navigate('/customer/my-orders')
 		} catch (error) {
-			toast.error('Error al crear la orden')
+			sileo.error({
+				title: 'Error al crear la orden',
+				description: 'No se pudo crear la orden',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 			console.error(error)
 		} finally {
 			setIsLoading(false)

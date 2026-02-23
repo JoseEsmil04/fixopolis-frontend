@@ -17,8 +17,8 @@ import {
 	SelectLabel,
 	SelectItem
 } from '@/components/ui/select'
-import { toast } from 'sonner'
 import { useAuthStore } from '../store/auth.store'
+import { sileo } from 'sileo'
 
 export const RegisterPage = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -39,15 +39,27 @@ export const RegisterPage = () => {
 		const confirmPassword = formData.get('confirmPassword') as string
 
 		if (password !== confirmPassword) {
-			toast.error(
-				'Las contraseñas no coinciden. Por favor, verifica la confirmación.'
-			)
+			sileo.error({
+				title: 'Contraseñas no coinciden',
+				description: 'Verifica la confirmación e inténtalo de nuevo.',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80'
+				}
+			})
 			setIsLoading(false)
 			return
 		}
 
 		if (!role) {
-			toast.error('El Rol es obligatorio. Por favor, selecciona un rol.')
+			sileo.error({
+				title: 'Error al crear la cuenta',
+				description: 'El Rol es obligatorio. Por favor, selecciona un rol.',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80'
+				}
+			})
 			setIsLoading(false)
 			return
 		}
@@ -66,36 +78,28 @@ export const RegisterPage = () => {
 			}
 		} catch (error) {
 			if (error instanceof Error) {
-				toast.error(`${error}`)
+				console.error(error)
+				sileo.error({
+					title: 'No se pudo completar la operación',
+					description: error.message?.trim()
+						? error.message
+						: 'Inténtalo de nuevo en unos segundos.',
+					fill: 'black',
+					styles: {
+						description: 'text-red-500/80'
+					}
+				})
+
 				setIsLoading(false)
 			}
 			return
+		} finally {
+			setIsLoading(false)
 		}
-
-		setIsLoading(false)
 	}
 
 	return (
 		<>
-			{/* Panel izquierdo - Solo visible en desktop */}
-			<div className="hidden lg:flex lg:w-1/2 bg-[#0f172a] text-white p-8 lg:p-12 flex-col justify-between">
-				<CustomLogo width="40" height="40" fontSize="7" />
-
-				<blockquote className="space-y-3">
-					<p className="text-xl lg:text-2xl leading-relaxed text-balance">
-						"En Fixopolis encontré todos los materiales que necesitaba para mi
-						proyecto. Excelente atención y precios justos."
-					</p>
-					<footer className="text-sm text-white/70">
-						Carlos Rodríguez, Constructor
-					</footer>
-				</blockquote>
-
-				<p className="text-sm text-white/50">
-					2026 Fixopolis. Todos los derechos reservados.
-				</p>
-			</div>
-
 			{/* Panel derecho - Formulario */}
 			<div className="flex-1 w-full flex items-center justify-center p-4 sm:p-8 lg:p-12 bg-background overflow-y-auto">
 				<div className="w-full max-w-lg mx-auto flex flex-col items-center px-6 py-8">

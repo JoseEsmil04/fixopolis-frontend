@@ -5,7 +5,7 @@ import {
 	QueryClientProvider,
 	useQuery
 } from '@tanstack/react-query'
-import { Toaster } from 'sonner'
+import { Toaster } from 'sileo'
 import { appRouter } from './app.router'
 import type { PropsWithChildren } from 'react'
 import { CustomLoading } from './components/custom/CustomLoading'

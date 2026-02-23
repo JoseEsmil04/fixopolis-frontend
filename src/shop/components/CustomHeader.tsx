@@ -31,7 +31,7 @@ export const CustomHeader = () => {
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between gap-4">
 					{/* Logo */}
-					<CustomLogo height="20" width="20" fontSize="4" />
+					<CustomLogo height="14" width="14" fontSize="4" />
 
 					{/* Desktop Nav */}
 					<nav className="hidden lg:flex items-center gap-1">
@@ -127,7 +127,7 @@ export const CustomHeader = () => {
 						)}
 
 						{(userIsAdmin() || userIsEmployee()) && (
-							<Link to="admin">
+							<Link to="/admin">
 								<Button className="bg-[#6D28D9] hover:bg-[#5B21B6] text-white rounded-full">
 									Panel Admin
 								</Button>
@@ -227,7 +227,15 @@ export const CustomHeader = () => {
 											Mi Panel
 										</Link>
 									)}
-
+									{(userIsAdmin() || userIsEmployee()) && (
+										<Link
+											to="/admin"
+											onClick={() => setIsOpen(false)}
+											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#6D28D9] hover:bg-[#5B21B6] text-white transition-colors w-full"
+										>
+											Panel Admin
+										</Link>
+									)}
 									{authStatus === 'not-authenticated' ? (
 										<Link
 											to="/auth/login"
@@ -246,16 +254,6 @@ export const CustomHeader = () => {
 										>
 											Cerrar sesión
 										</button>
-									)}
-
-									{(userIsAdmin() || userIsEmployee()) && (
-										<Link
-											to="/admin"
-											onClick={() => setIsOpen(false)}
-											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#0D9668] hover:bg-[#0A7C56] text-white transition-colors w-full"
-										>
-											Panel Admin
-										</Link>
 									)}
 								</div>
 							</div>

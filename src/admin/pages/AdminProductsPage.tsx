@@ -26,8 +26,9 @@ import type { Product } from '@/shop/interfaces/product.interface'
 import { CustomLoading } from '@/components/custom/CustomLoading'
 import { Link } from 'react-router'
 import { deleteProductAction } from '../actions/delete-product.action'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAuthStore } from '@/auth/store/auth.store'
 
 const truncateDescription = (text: string, maxLength: number = 40) => {
 	if (!text || text.length <= maxLength) return text
@@ -40,6 +41,8 @@ export const AdminProductsPage = () => {
 	const { data, isLoading } = useProducts()
 	const products = data?.data
 	const queryClient = useQueryClient()
+	const { userIsAdmin } = useAuthStore()
+	const isAdmin = userIsAdmin()
 
 	if (isLoading || !products) {
 		return <CustomLoading />
@@ -56,9 +59,25 @@ export const AdminProductsPage = () => {
 			setIsDeleteDialogOpen(false)
 			setSelectedProduct(null)
 			queryClient.invalidateQueries({ queryKey: ['products'] })
-			toast.success('Producto eliminado correctamente')
+			sileo.success({
+				title: 'Producto eliminado',
+				description: 'El producto ha sido eliminado correctamente',
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 		} catch (error) {
-			toast.error('Error al eliminar el producto')
+			sileo.error({
+				title: 'Error al eliminar',
+				description: 'No se pudo eliminar el producto',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 			console.error(error)
 		}
 	}
@@ -197,15 +216,17 @@ export const AdminProductsPage = () => {
 																<span className="sr-only">Editar</span>
 															</Button>
 														</Link>
-														<Button
-															variant="ghost"
-															size="sm"
-															className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-															onClick={() => openDeleteDialog(product)}
-														>
-															<Trash2 className="h-4 w-4" />
-															<span className="sr-only">Eliminar</span>
-														</Button>
+														{isAdmin && (
+															<Button
+																variant="ghost"
+																size="sm"
+																className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+																onClick={() => openDeleteDialog(product)}
+															>
+																<Trash2 className="h-4 w-4" />
+																<span className="sr-only">Eliminar</span>
+															</Button>
+														)}
 													</div>
 												</TableCell>
 											</TableRow>

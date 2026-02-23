@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/auth/store/auth.store'
+import FixopolisLogo from '@/assets/FixopolisLogo.webp'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -59,12 +60,13 @@ export function CustomerSidebar({
 		>
 			<div className="flex h-full flex-col">
 				<div className="flex h-16 items-center justify-between border-b border-b-white/10 px-2">
-					<Link to="/" className="flex-1 flex justify-center">
-						{isCollapsed ? (
-							<span className="text-2xl font-bold text-white hover:text-[#0D9668] hover:opacity-80">
-								F
-							</span>
-						) : (
+					<Link to="/" className="flex flex-1 items-center justify-center gap-2">
+						<img
+							src={FixopolisLogo}
+							alt="Fixopolis"
+							className={cn('h-10 w-10 object-contain', isCollapsed && 'h-10 w-10')}
+						/>
+						{!isCollapsed && (
 							<span className="text-2xl font-bold text-white hover:text-[#0D9668] hover:opacity-80">
 								Fixopolis
 							</span>

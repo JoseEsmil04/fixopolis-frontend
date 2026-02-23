@@ -1,7 +1,7 @@
 import type { OrderResponse } from '@/customer/interfaces/order.response'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import { cancelOrderAction } from '../actions/cancel-order.action'
 import { getOrdersAction } from '../actions/get-orders.action'
 import { payOrderAction } from '../actions/pay-order.action'
@@ -19,10 +19,26 @@ export const useOrder = () => {
 		mutationFn: cancelOrderAction,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] })
-			toast.success('Orden cancelada exitosamente')
+			sileo.success({
+				title: 'Orden cancelada',
+				description: 'La orden ha sido cancelada exitosamente',
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 		},
 		onError: () => {
-			toast.error('Error al cancelar la orden')
+			sileo.error({
+				title: 'Error al cancelar',
+				description: 'No se pudo cancelar la orden',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 		}
 	})
 
@@ -30,10 +46,26 @@ export const useOrder = () => {
 		mutationFn: payOrderAction,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] })
-			toast.success('Orden pagada exitosamente')
+			sileo.success({
+				title: 'Orden pagada',
+				description: 'La orden ha sido pagada exitosamente',
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 		},
 		onError: () => {
-			toast.error('Error al pagar la orden')
+			sileo.error({
+				title: 'Error al pagar',
+				description: 'No se pudo pagar la orden',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 		}
 	})
 

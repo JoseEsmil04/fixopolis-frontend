@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { useAuthStore } from '@/auth/store/auth.store'
 import { useCartStore } from '@/customer/store/cart.store'
 import { createOrderAction } from '@/customer/actions/create-order.action'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -27,6 +27,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
+import { CustomLoading } from '@/components/custom/CustomLoading'
 
 export function ProductPage() {
 	const { id = '' } = useParams()
@@ -73,9 +74,15 @@ export function ProductPage() {
 			quantity
 		)
 
-		toast.success(
-			`${quantity} ${quantity === 1 ? 'producto' : 'productos'} agregado${quantity > 1 ? 's' : ''} al carrito`
-		)
+		sileo.success({
+			title: 'Producto agregado',
+			description: `${quantity} ${quantity === 1 ? 'producto' : 'productos'} agregado${quantity > 1 ? 's' : ''} al carrito`,
+			fill: 'black',
+			styles: {
+				description: 'text-[#0D9668]'
+			},
+			position: 'bottom-right'
+		})
 	}
 
 	const handleCreateOrderNow = async () => {
@@ -84,10 +91,26 @@ export function ProductPage() {
 		setIsLoading(true)
 		try {
 			await createOrderAction(user.id, [{ productId: product.id, quantity }])
-			toast.success('Orden creada exitosamente')
+			sileo.success({
+				title: 'Orden creada',
+				description: 'Tu orden ha sido creada exitosamente',
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 			navigate('/customer/my-orders')
 		} catch (error) {
-			toast.error('Error al crear la orden')
+			sileo.error({
+				title: 'Error al crear la orden',
+				description: 'No se pudo crear la orden',
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 			console.error(error)
 		} finally {
 			setIsLoading(false)
@@ -95,11 +118,7 @@ export function ProductPage() {
 	}
 
 	if (isProductLoading) {
-		return (
-			<div className="min-h-screen bg-[#1E293B] flex items-center justify-center">
-				<div className="text-white text-xl">Cargando...</div>
-			</div>
-		)
+		return <CustomLoading item="Producto" />
 	}
 
 	if (!product) {

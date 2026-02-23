@@ -14,7 +14,12 @@ const data = [
 	{ month: 'Abr', ordenes: 85, ingresos: 5800 },
 	{ month: 'May', ordenes: 110, ingresos: 7500 },
 	{ month: 'Jun', ordenes: 125, ingresos: 8200 },
-	{ month: 'Jul', ordenes: 142, ingresos: 9100 }
+	{ month: 'Jul', ordenes: 142, ingresos: 9100 },
+	{ month: 'Aug', ordenes: 96, ingresos: 7120 },
+	{ month: 'Sep', ordenes: 72, ingresos: 5800 },
+	{ month: 'Oct', ordenes: 110, ingresos: 10222 },
+	{ month: 'Nov', ordenes: 163, ingresos: 9100 },
+	{ month: 'Dec', ordenes: 105, ingresos: 8611 }
 ]
 
 export function ServicesChart() {

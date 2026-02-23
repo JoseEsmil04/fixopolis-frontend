@@ -4,7 +4,7 @@ import { CustomLoading } from '@/components/custom/CustomLoading'
 import { useProduct } from '@/admin/hooks/useProduct'
 import { ProductForm } from '../components/ProductForm'
 import type { Product } from '@/shop/interfaces/product.interface'
-import { toast } from 'sonner'
+import { sileo } from 'sileo'
 
 export const AdminProductPage = () => {
 	const { id } = useParams()
@@ -22,21 +22,27 @@ export const AdminProductPage = () => {
 		try {
 			const productData = { ...productLike, id }
 			await mutation.mutateAsync(productData)
-			toast.success(
-				`Producto ${isNewProduct ? 'creado' : 'actualizado'} correctamente`,
-				{
-					position: 'top-right'
-				}
-			)
+			sileo.success({
+				title: `Producto ${isNewProduct ? 'creado' : 'actualizado'}`,
+				description: `El producto ha sido ${isNewProduct ? 'creado' : 'actualizado'} correctamente`,
+				fill: 'black',
+				styles: {
+					description: 'text-[#0D9668]'
+				},
+				position: 'bottom-right'
+			})
 			navigate(`/admin/products`)
 		} catch (error) {
 			console.error(error)
-			toast.error(
-				`Hubo un error al ${isNewProduct ? 'crear' : 'actualizar'} el producto`,
-				{
-					position: 'top-right'
-				}
-			)
+			sileo.error({
+				title: `Error al ${isNewProduct ? 'crear' : 'actualizar'}`,
+				description: `No se pudo ${isNewProduct ? 'crear' : 'actualizar'} el producto`,
+				fill: 'black',
+				styles: {
+					description: 'text-red-500/80!'
+				},
+				position: 'bottom-right'
+			})
 		}
 	}
 

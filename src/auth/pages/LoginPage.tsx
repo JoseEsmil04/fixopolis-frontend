@@ -8,8 +8,8 @@ import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useNavigate } from 'react-router'
 import { EyeOffIcon, EyeIcon, GithubIcon } from 'lucide-react'
 import { GoogleIcon } from '../components/AuthIcons'
-import { toast } from 'sonner'
 import { useAuthStore } from '../store/auth.store'
+import { sileo } from 'sileo'
 
 export const LoginPage = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -32,31 +32,19 @@ export const LoginPage = () => {
 			return
 		}
 
-		toast.error(`Correo y/o contraseña no validos`)
+		sileo.error({
+			title: 'No se pudo iniciar sesión',
+			description: 'Verifica tu correo y contraseña e inténtalo de nuevo.',
+			fill: 'black',
+			styles: {
+				description: 'text-red-500/80'
+			}
+		})
 		setIsLoading(false)
 	}
 
 	return (
 		<>
-			{/* Panel izquierdo - Solo visible en desktop */}
-			<div className="hidden lg:flex lg:w-1/2 bg-[#0f172a] text-white p-8 lg:p-12 flex-col justify-between">
-				<CustomLogo width="40" height="40" fontSize="7" />
-
-				<blockquote className="space-y-3">
-					<p className="text-xl lg:text-2xl leading-relaxed text-balance">
-						"En Fixopolis encontré todos los materiales que necesitaba para mi
-						proyecto. Excelente atención y precios justos."
-					</p>
-					<footer className="text-sm text-white/70">
-						Carlos Rodríguez, Constructor
-					</footer>
-				</blockquote>
-
-				<p className="text-sm text-white/50">
-					2026 Fixopolis. Todos los derechos reservados.
-				</p>
-			</div>
-
 			{/* Panel derecho - Formulario */}
 			<div className="flex-1 w-full flex items-center justify-center p-4 sm:p-8 lg:p-12 bg-background overflow-y-auto">
 				<div className="w-full max-w-md mx-auto flex flex-col py-8">
@@ -146,7 +134,6 @@ export const LoginPage = () => {
 							{isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
 						</Button>
 					</form>
-
 					<div className="relative my-5 lg:my-6 w-full">
 						<div className="absolute inset-0 flex items-center">
 							<div className="w-full border-t border-border" />
@@ -157,7 +144,6 @@ export const LoginPage = () => {
 							</span>
 						</div>
 					</div>
-
 					<div className="w-full flex gap-3">
 						<Button
 							variant="outline"
