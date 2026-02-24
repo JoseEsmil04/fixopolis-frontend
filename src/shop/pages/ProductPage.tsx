@@ -12,6 +12,7 @@ import {
 import { useParams, useNavigate } from 'react-router'
 import { useProduct } from '@/admin/hooks/useProduct'
 import { Badge } from '@/components/ui/badge'
+import { Link } from 'react-router'
 import { useAuthStore } from '@/auth/store/auth.store'
 import { useCartStore } from '@/customer/store/cart.store'
 import { createOrderAction } from '@/customer/actions/create-order.action'
@@ -34,7 +35,8 @@ export function ProductPage() {
 	const navigate = useNavigate()
 	const [quantity, setQuantity] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
-	const { userIsAdmin, userIsEmployee, user } = useAuthStore()
+	const { userIsAdmin, userIsEmployee, user, authStatus, userisCustomer } =
+		useAuthStore()
 	const addItem = useCartStore((state) => state.addItem)
 	const isAdminOrEmployee = userIsAdmin() || userIsEmployee()
 
@@ -212,87 +214,105 @@ export function ProductPage() {
 								</div>
 							) : (
 								<>
-									<div className="flex items-center justify-between gap-3">
-										<span className="text-white/80 text-sm">Cantidad:</span>
-										<div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
-											<button
-												onClick={() => handleQuantityChange(-1)}
-												disabled={quantity <= 1 || isOutOfStock}
-												className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
+									{authStatus === 'not-authenticated' || !userisCustomer() ? (
+										<div className="space-y-2">
+											<div className="w-full bg-[#6D28D9]/50 text-white/60 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-sm">
+												<ShoppingCart size={16} />
+												Inicia sesión para agregar al carrito
+											</div>
+											<Link
+												to="/auth/login"
+												className="w-full cursor-pointer bg-[#0D9668] hover:bg-[#0D9668]/90 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all text-sm"
 											>
-												<Minus size={14} />
-											</button>
-											<span className="text-lg font-semibold text-white w-8 sm:w-10 text-center">
-												{quantity}
-											</span>
-											<button
-												onClick={() => handleQuantityChange(1)}
-												disabled={quantity >= product.stock || isOutOfStock}
-												className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
-											>
-												<Plus size={14} />
-											</button>
-										</div>
-									</div>
-
-									{isOutOfStock ? (
-										<div className="w-full bg-slate-700 text-white/60 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-sm">
-											No disponible por el momento
+												<Zap size={16} />
+												Iniciar sesión para comprar
+											</Link>
 										</div>
 									) : (
-										<div className="space-y-2">
-											<button
-												onClick={handleAddToCart}
-												className="w-full cursor-pointer bg-[#6D28D9] hover:bg-[#6D28D9]/90 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-											>
-												<ShoppingCart size={16} />
-												Agregar al Carrito
-											</button>
-											<AlertDialog>
-												<AlertDialogTrigger asChild>
+										<>
+											<div className="flex items-center justify-between gap-3">
+												<span className="text-white/80 text-sm">Cantidad:</span>
+												<div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
 													<button
-														disabled={isLoading}
-														className="w-full cursor-pointer bg-[#0D9668] hover:bg-[#0D9668]/90 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+														onClick={() => handleQuantityChange(-1)}
+														disabled={quantity <= 1 || isOutOfStock}
+														className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
 													>
-														{isLoading ? (
-															<Loader2 className="h-4 w-4 animate-spin" />
-														) : (
-															<Zap size={16} />
-														)}
-														{isLoading ? 'Creando...' : 'Crear Orden Ahora'}
+														<Minus size={14} />
 													</button>
-												</AlertDialogTrigger>
-												<AlertDialogContent>
-													<AlertDialogHeader>
-														<AlertDialogTitle>
-															Confirmar compra del producto
-														</AlertDialogTitle>
+													<span className="text-lg font-semibold text-white w-8 sm:w-10 text-center">
+														{quantity}
+													</span>
+													<button
+														onClick={() => handleQuantityChange(1)}
+														disabled={quantity >= product.stock || isOutOfStock}
+														className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
+													>
+														<Plus size={14} />
+													</button>
+												</div>
+											</div>
 
-														<AlertDialogDescription>
-															Estás a punto de generar una orden con este
-															producto y la cantidad seleccionada. Esta acción
-															registrará la compra en el sistema.
-															<br />
-															<br />
-															Verifica los detalles antes de continuar.
-														</AlertDialogDescription>
-													</AlertDialogHeader>
+											{isOutOfStock ? (
+												<div className="w-full bg-slate-700 text-white/60 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-sm">
+													No disponible por el momento
+												</div>
+											) : (
+												<div className="space-y-2">
+													<button
+														onClick={handleAddToCart}
+														className="w-full cursor-pointer bg-[#6D28D9] hover:bg-[#6D28D9]/90 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+													>
+														<ShoppingCart size={16} />
+														Agregar al Carrito
+													</button>
+													<AlertDialog>
+														<AlertDialogTrigger asChild>
+															<button
+																disabled={isLoading}
+																className="w-full cursor-pointer bg-[#0D9668] hover:bg-[#0D9668]/90 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+															>
+																{isLoading ? (
+																	<Loader2 className="h-4 w-4 animate-spin" />
+																) : (
+																	<Zap size={16} />
+																)}
+																{isLoading ? 'Creando...' : 'Crear Orden Ahora'}
+															</button>
+														</AlertDialogTrigger>
+														<AlertDialogContent>
+															<AlertDialogHeader>
+																<AlertDialogTitle>
+																	Confirmar compra del producto
+																</AlertDialogTitle>
 
-													<AlertDialogFooter>
-														<AlertDialogCancel variant="outline">
-															Seguir revisando
-														</AlertDialogCancel>
+																<AlertDialogDescription>
+																	Estás a punto de generar una orden con este
+																	producto y la cantidad seleccionada. Esta acción
+																	registrará la compra en el sistema.
+																	<br />
+																	<br />
+																	Verifica los detalles antes de continuar.
+																</AlertDialogDescription>
+															</AlertDialogHeader>
 
-														<AlertDialogAction
-															variant="secondaryColor"
-															onClick={handleCreateOrderNow}
-														>
-															Confirmar compra
-														</AlertDialogAction>
-													</AlertDialogFooter>
-												</AlertDialogContent>
-											</AlertDialog>
-										</div>
+															<AlertDialogFooter>
+																<AlertDialogCancel variant="outline">
+																	Seguir revisando
+																</AlertDialogCancel>
+
+																<AlertDialogAction
+																	variant="secondaryColor"
+																	onClick={handleCreateOrderNow}
+																>
+																	Confirmar compra
+																</AlertDialogAction>
+															</AlertDialogFooter>
+														</AlertDialogContent>
+													</AlertDialog>
+												</div>
+											)}
+										</>
 									)}
 								</>
 							)}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Menu } from 'lucide-react'
+import { Menu, ShoppingCart } from 'lucide-react'
 import { CustomLogo } from '@/components/custom/CustomLogo'
 import { Link, useParams } from 'react-router'
 import { useAuthStore } from '@/auth/store/auth.store'
@@ -135,16 +135,26 @@ export const CustomHeader = () => {
 						)}
 
 						{userisCustomer() && (
-							<Link to="/customer/my-orders">
-								<Button className="bg-[#0D9668] hover:bg-[#0A7C56] text-white rounded-full relative">
-									Mi Panel
-									{totalItems > 0 && (
-										<span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-[#6D28D9] text-xs text-white flex items-center justify-center">
-											{totalItems}
-										</span>
-									)}
-								</Button>
-							</Link>
+							<>
+								<Link to="/customer/cart">
+									<Button
+										variant="ghost"
+										className="text-white/90 hover:text-white hover:bg-white/10 rounded-full relative"
+									>
+										<ShoppingCart size={20} />
+										{totalItems > 0 && (
+											<span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-[#6D28D9] text-xs text-white flex items-center justify-center">
+												{totalItems}
+											</span>
+										)}
+									</Button>
+								</Link>
+								<Link to="/customer/my-orders">
+									<Button className="bg-[#0D9668] hover:bg-[#0A7C56] text-white rounded-full">
+										Mi Panel
+									</Button>
+								</Link>
+							</>
 						)}
 					</div>
 
@@ -219,13 +229,28 @@ export const CustomHeader = () => {
 
 								<div className="p-4 border-t border-white/10 space-y-3">
 									{userisCustomer() && (
-										<Link
-											to="/customer/my-orders"
-											onClick={() => setIsOpen(false)}
-											className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#0D9668] hover:bg-[#0A7C56] text-white transition-colors w-full"
-										>
-											Mi Panel
-										</Link>
+										<>
+											<Link
+												to="/customer/cart"
+												onClick={() => setIsOpen(false)}
+												className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#6D28D9]/70 hover:bg-[#6D28D9] text-white transition-colors w-full relative"
+											>
+												<ShoppingCart size={18} />
+												Carrito
+												{totalItems > 0 && (
+													<span className="absolute -top-1 right-4 h-5 w-5 rounded-full bg-[#0D9668] text-xs text-white flex items-center justify-center">
+														{totalItems}
+													</span>
+												)}
+											</Link>
+											<Link
+												to="/customer/my-orders"
+												onClick={() => setIsOpen(false)}
+												className="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium bg-[#0D9668] hover:bg-[#0A7C56] text-white transition-colors w-full"
+											>
+												Mi Panel
+											</Link>
+										</>
 									)}
 									{(userIsAdmin() || userIsEmployee()) && (
 										<Link
